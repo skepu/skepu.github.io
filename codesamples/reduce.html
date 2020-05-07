@@ -1,0 +1,11 @@
+<pre class="example"><span style='color:#800000; font-weight:bold; '>float</span> min_f<span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>float</span> a<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>float</span> b<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#808030; '>(</span>a <span style='color:#808030; '>&lt;</span> b<span style='color:#808030; '>)</span> <span style='color:#800080; '>?</span> a <span style='color:#800080; '>:</span> b<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>float</span> <span style='color:#603000; '>min_element</span><span style='color:#808030; '>(</span>Vector<span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#800080; '>></span> <span style='color:#808030; '>&amp;</span>v<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>auto</span> min_calc <span style='color:#808030; '>=</span> Reduce<span style='color:#808030; '>(</span>min_f<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> min_calc<span style='color:#808030; '>(</span>v<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+</pre>

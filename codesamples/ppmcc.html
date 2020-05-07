@@ -1,0 +1,69 @@
+<p>This example demonstrates SkePU with a program computing the <a href="https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient">PPMCC</a> coefficient of two vectors. It uses three skeleton instances: <code>sum</code>, <code>sumSquare</code>, and <code>dotProduct</code> and illustrates multiple ways of defining user functions. SkePU's <a href="#containers">smart containers</a> are well suited to calling multiple skeletons in sequence as done here.</p>
+
+
+<pre class="example"><span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>iostream</span><span style='color:#800000; '>></span>
+<span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>cmath</span><span style='color:#800000; '>></span>
+<span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>skepu</span><span style='color:#800000; '>></span>
+
+<span style='color:#696969; '>// Unary user function</span>
+<span style='color:#800000; font-weight:bold; '>float</span> square<span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>float</span> a<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>*</span> a<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#696969; '>// Binary user function</span>
+<span style='color:#800000; font-weight:bold; '>float</span> mult<span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>float</span> a<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>float</span> b<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>*</span> b<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#696969; '>// User function template</span>
+<span style='color:#800000; font-weight:bold; '>template</span><span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>typename</span> T<span style='color:#800080; '>></span>
+T <span style='color:#603000; '>plus</span><span style='color:#808030; '>(</span>T a<span style='color:#808030; '>,</span> T b<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>+</span> b<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#696969; '>// Function computing PPMCC</span>
+<span style='color:#800000; font-weight:bold; '>float</span> ppmcc<span style='color:#808030; '>(</span>skepu2<span style='color:#800080; '>::</span>Vector<span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#800080; '>></span> <span style='color:#808030; '>&amp;</span>x<span style='color:#808030; '>,</span> skepu2<span style='color:#800080; '>::</span>Vector<span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#800080; '>></span> <span style='color:#808030; '>&amp;</span>y<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#696969; '>// Instance of Reduce skeleton </span>
+	<span style='color:#800000; font-weight:bold; '>auto</span> sum <span style='color:#808030; '>=</span> skepu2<span style='color:#800080; '>::</span>Reduce<span style='color:#808030; '>(</span><span style='color:#603000; '>plus</span><span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#800080; '>></span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#696969; '>// Instance of MapReduce skeleton</span>
+	<span style='color:#800000; font-weight:bold; '>auto</span> sumSquare <span style='color:#808030; '>=</span> skepu2<span style='color:#800080; '>::</span>MapReduce<span style='color:#800080; '>&lt;</span><span style='color:#008c00; '>1</span><span style='color:#800080; '>></span><span style='color:#808030; '>(</span>square<span style='color:#808030; '>,</span> <span style='color:#603000; '>plus</span><span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#800080; '>></span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#696969; '>// Instance with lambda syntax</span>
+	<span style='color:#800000; font-weight:bold; '>auto</span> dotProduct <span style='color:#808030; '>=</span> skepu2<span style='color:#800080; '>::</span>MapReduce<span style='color:#800080; '>&lt;</span><span style='color:#008c00; '>2</span><span style='color:#800080; '>></span><span style='color:#808030; '>(</span>
+	<span style='color:#808030; '>[</span><span style='color:#808030; '>]</span> <span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>float</span> a<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>float</span> b<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span> <span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>*</span> b<span style='color:#800080; '>;</span> <span style='color:#800080; '>}</span><span style='color:#808030; '>,</span>
+	<span style='color:#808030; '>[</span><span style='color:#808030; '>]</span> <span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>float</span> a<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>float</span> b<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span> <span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>+</span> b<span style='color:#800080; '>;</span> <span style='color:#800080; '>}</span>
+	<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#603000; '>size_t</span> N <span style='color:#808030; '>=</span> x<span style='color:#808030; '>.</span>size<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	<span style='color:#800000; font-weight:bold; '>float</span> sumX <span style='color:#808030; '>=</span> sum<span style='color:#808030; '>(</span>x<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	<span style='color:#800000; font-weight:bold; '>float</span> sumY <span style='color:#808030; '>=</span> sum<span style='color:#808030; '>(</span>y<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#808030; '>(</span>N <span style='color:#808030; '>*</span> dotProduct<span style='color:#808030; '>(</span>x<span style='color:#808030; '>,</span> y<span style='color:#808030; '>)</span> <span style='color:#808030; '>-</span> sumX <span style='color:#808030; '>*</span> sumY<span style='color:#808030; '>)</span>
+		<span style='color:#808030; '>/</span> <span style='color:#603000; '>sqrt</span><span style='color:#808030; '>(</span><span style='color:#808030; '>(</span>N <span style='color:#808030; '>*</span> sumSquare<span style='color:#808030; '>(</span>x<span style='color:#808030; '>)</span> <span style='color:#808030; '>-</span> <span style='color:#603000; '>pow</span><span style='color:#808030; '>(</span>sumX<span style='color:#808030; '>,</span> <span style='color:#008c00; '>2</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#808030; '>
+			*</span> <span style='color:#808030; '>(</span>N <span style='color:#808030; '>*</span> sumSquare<span style='color:#808030; '>(</span>y<span style='color:#808030; '>)</span> <span style='color:#808030; '>-</span> <span style='color:#603000; '>pow</span><span style='color:#808030; '>(</span>sumY<span style='color:#808030; '>,</span> <span style='color:#008c00; '>2</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>int</span> <span style='color:#400000; '>main</span><span style='color:#808030; '>(</span><span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>const</span> <span style='color:#603000; '>size_t</span> size <span style='color:#808030; '>=</span> <span style='color:#008c00; '>100</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#696969; '>// Vector operands</span>
+	skepu2<span style='color:#800080; '>::</span>Vector<span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#800080; '>></span> x<span style='color:#808030; '>(</span>size<span style='color:#808030; '>)</span><span style='color:#808030; '>,</span> y<span style='color:#808030; '>(</span>size<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	x<span style='color:#808030; '>.</span>randomize<span style='color:#808030; '>(</span><span style='color:#008c00; '>1</span><span style='color:#808030; '>,</span> <span style='color:#008c00; '>3</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	y<span style='color:#808030; '>.</span>randomize<span style='color:#808030; '>(</span><span style='color:#008c00; '>2</span><span style='color:#808030; '>,</span> <span style='color:#008c00; '>4</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#666616; '>std</span><span style='color:#800080; '>::</span><span style='color:#603000; '>cout</span> <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> <span style='color:#800000; '>"</span><span style='color:#0000e6; '>X: </span><span style='color:#800000; '>"</span> <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> x <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> <span style='color:#800000; '>"</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>"</span><span style='color:#800080; '>;</span>
+	<span style='color:#666616; '>std</span><span style='color:#800080; '>::</span><span style='color:#603000; '>cout</span> <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> <span style='color:#800000; '>"</span><span style='color:#0000e6; '>Y: </span><span style='color:#800000; '>"</span> <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> y <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> <span style='color:#800000; '>"</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>"</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#800000; font-weight:bold; '>float</span> res <span style='color:#808030; '>=</span> ppmcc<span style='color:#808030; '>(</span>x<span style='color:#808030; '>,</span> y<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#666616; '>std</span><span style='color:#800080; '>::</span><span style='color:#603000; '>cout</span> <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> <span style='color:#800000; '>"</span><span style='color:#0000e6; '>res: </span><span style='color:#800000; '>"</span> <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> res <span style='color:#808030; '>&lt;</span><span style='color:#808030; '>&lt;</span> <span style='color:#800000; '>"</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>"</span><span style='color:#800080; '>;</span>
+
+	<span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#008c00; '>0</span><span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+</pre>

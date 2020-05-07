@@ -1,0 +1,15 @@
+<pre class="example"><span style='color:#800000; font-weight:bold; '>int</span> mul<span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>int</span> a<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>int</span> b<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span> <span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>*</span> b<span style='color:#800080; '>;</span> <span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>int</span> sum<span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>int</span> a<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>int</span> b<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span> <span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>+</span> b<span style='color:#800080; '>;</span> <span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>void</span> mappairsreduce<span style='color:#808030; '>(</span><span style='color:#603000; '>size_t</span> Vsize<span style='color:#808030; '>,</span> <span style='color:#603000; '>size_t</span> Hsize<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>auto</span> mpr <span style='color:#808030; '>=</span> skepu<span style='color:#800080; '>::</span>MapPairsReduce<span style='color:#808030; '>(</span>mul<span style='color:#808030; '>,</span> sum<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	
+	skepu<span style='color:#800080; '>::</span>Vector<span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>int</span><span style='color:#800080; '>></span> v1<span style='color:#808030; '>(</span>Vsize<span style='color:#808030; '>)</span><span style='color:#808030; '>,</span> h1<span style='color:#808030; '>(</span>Hsize<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	skepu<span style='color:#800080; '>::</span>Vector<span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>int</span><span style='color:#800080; '>></span> res<span style='color:#808030; '>(</span>Hsize<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	
+	mpr<span style='color:#808030; '>.</span>setReduceMode<span style='color:#808030; '>(</span>skepu<span style='color:#800080; '>::</span>ReduceMode<span style='color:#800080; '>::</span>ColWise<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	mpr<span style='color:#808030; '>(</span>res<span style='color:#808030; '>,</span> v1<span style='color:#808030; '>,</span> h1<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+</pre>

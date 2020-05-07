@@ -1,0 +1,16 @@
+<pre class="example"><span style='color:#800000; font-weight:bold; '>float</span> add<span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>float</span> a<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>float</span> b<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>+</span> b<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>float</span> mult<span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>float</span> a<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>float</span> b<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> a <span style='color:#808030; '>*</span> b<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+<span style='color:#800000; font-weight:bold; '>float</span> dot_product<span style='color:#808030; '>(</span>Vector<span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#800080; '>></span> <span style='color:#808030; '>&amp;</span>v1<span style='color:#808030; '>,</span> Vector<span style='color:#800080; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#800080; '>></span> <span style='color:#808030; '>&amp;</span>v2<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	<span style='color:#800000; font-weight:bold; '>auto</span> dotprod <span style='color:#808030; '>=</span> MapReduce<span style='color:#800080; '>&lt;</span><span style='color:#008c00; '>2</span><span style='color:#800080; '>></span><span style='color:#808030; '>(</span>mult<span style='color:#808030; '>,</span> add<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> dotprod<span style='color:#808030; '>(</span>v1<span style='color:#808030; '>,</span> v2<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+</pre>

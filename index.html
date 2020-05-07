@@ -1,1 +1,347 @@
-Test new SkePU webpage!
+---
+---
+<!doctype HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SkePU</title>
+	<link rel="stylesheet" href="style.css"/>
+</head>
+	<body>
+		<div id="container">
+			
+			<span class="menu">
+				<a class="menu-item" href="#intro">Introduction</a> &middot;
+				<a class="menu-item" href="#downloads">Downloads</a> &middot;
+				<a class="menu-item" href="#example">Example</a> &middot;
+				<a class="menu-item" href="#skeletons">Skeletons</a> &middot;
+				<a class="menu-item" href="#applications">Applications</a> &middot;
+				<a class="menu-item" href="#publications">Publications</a> &middot;
+				<a class="menu-item" href="#contact">Contact</a> &middot;
+				<a class="menu-item" href="#acknowledgements">Acknowledgements</a> &middot;
+				<a class="menu-item" style="color: silver !important;" href="https://www.ida.liu.se/labs/pelab/skepu/skepu1/">SkePU 1</a>
+			</span>
+			
+			<article>
+				<div id="logo-container"><img id="logo" src="img/logos/skepu.png" alt="SkePU logo"/></div>
+				
+				<p id="tagline">Autotunable Multi-Backend Skeleton Programming Framework for Multicore CPU and Multi-GPU Systems</p>
+				
+				<p id="news">
+					<em>New:</em> Preview release of SkePU 3, with new skeletons, new containers, and new MPI backend!<br/>
+					<em>New:</em> SkePU is now hosted on <a href="https://github.com/skepu/skepu/">GitHub</a>!
+				</p>
+				
+				<section>
+					<h2 id="intro">Introduction</h2>
+					<p><em>Skeleton programming</em> is an approach where an application is written with the help of <em>skeletons</em>. A skeleton is a pre-defined, generic component such as map, reduce, scan, farm, pipeline etc. that implements a common specific pattern of computation and data dependence, and that can be customized with (sequential) user-defined code parameters. Skeletons provide a high degree of abstraction and portability with a quasi-sequential programming interface, as their implementations encapsulate all low-level and platform-specific details such as parallelization, synchronization, communication, memory management, accelerator usage and other optimizations.</p>
+					<p><em>SkePU</em> is an open-source skeleton programming framework for multicore CPUs and multi-GPU systems. It is a C++ template library with six data-parallel and one task-parallel skeletons, two generic container types, and support for execution on multi-GPU systems both with CUDA and OpenCL.</p>
+					
+					<h3>Main features</h3>
+					<!--<img align="right" width="360px" alt="SkePU skeletons" src="skeletons-overview.jpg">-->
+					<h4>Supported skeletons</h4>
+					<ul>
+						<li><a href="#map">Map</a>: Data-parallel element-wise application of a function with arbitrary arity.</li>
+						<li><a href="#reduce">Reduce</a>: Reduction with 1D and 2D variations.</li>
+						<li><a href="#mapreduce">MapReduce</a>: Efficient chaining of Map and Reduce.</li>
+						<li><a href="#mapoverlap">MapOverlap</a>: Stencil operation in 1D and 2D.</li>
+						<li><a href="#scan">Scan</a>: Generalized prefix sum.</li>
+						<li><a href="#mappairs">MapPairs</a>: Cartesian product-style computation.</li>
+						<li><a href="#mappairsreduce">MapPairsReduce</a>: Efficient chaining of MapPairs and Reduce.</li>
+						<li><a href="#call">Call</a>: Generic multi-variant component.</li>
+					</ul>
+					
+					<h4>Multiple back-ends and multi-GPU support</h4>
+					
+					<p>Each skeleton has several different backends (implementations): for sequential C, OpenMP, OpenCL, CUDA, and multi-GPU OpenCL and CUDA. There is also an experimental back-end for MPI (which is not part of the public distribution below).</p>
+					
+					<h4>Tunable context-aware implementation selection</h4>
+					
+					<p>Depending on a skeleton call's execution context properties (usually, operand size), different backends (skeleton implementations) for different execution unit types will be more efficient than others. SkePU provides a tuning framework that allows it to automatically select the expected fastest implementation variant at each skeleton call.</p>
+					
+					<h4 id="containers">Smart containers (Vector, Matrix, Tensor)</h4>
+					
+					<p>For passing operands to skeleton calls: Smart containers are runtime data structures wrapping operand data that control software caching of operand elements by automatically keeping track of the valid copies of their element data and their memory locations. Smart containers can, at runtime, automatically optimize communication, perform memory management, and synchronize asynchronous skeleton calls driven by operand data flow.</p>
+					
+					<p>Smart containers come in the shapes of 1D vectors, 2D matrices, 3D tensors, and 4D tensors.</p>
+					
+					<h3 id="changes">Changes</h3>
+					
+					<p>SkePU 2 is a rewrite of SkePU, with a new user interface based on modern C++ syntax, such as <em>lambda expressions</em>; a new compilation model with a <em>source-to-source</em> translator using <em>Clang</em> libraries; a revised implementation and runtime built around variadic templates; and the same efficient parallel skeleton algorithms as before. The design of SkePU 2 emphasizes <em>flexibility</em> and <em>type-safety</em>, areas in which earlier work on SkePU 1.x had identified opportunities for improvement.</p>
+					
+					<p>SkePU 2 removes the MapArray and Generate skeletons in favor of a generalized <a href="#map">Map</a> and adds the <a href="#call">Call</a> skeleton. It is not backwards-compatible with programs written for SkePU 1.x. However, translating existing source-code is straightforward as each skeleton in SkePU 1.x has a direct—or simpler—equivalent in SkePU 2 and later.</p>
+					
+					<p>SkePU 3 builds on the modern foundation of SkePU 2 and adds <em>new skeletons, new smart containers, an MPI backend</em> for cluster execution and improves the interface and semantics of SkePU applciations. It is not backwards-compatible with SkePU 2 programs, but the changes are of limited scope and old applications can be adapted with little effort.</p>
+					
+				</section>
+				
+				<section>
+					<h2 id="downloads">Downloads</h2>
+					
+					<span class="buttons">
+						<span class="button get" id="source"><img class="thumb" alt="source code" src="img/source.png"/><br/><a href="https://github.com/skepu/skepu/">Source Code</a></span>
+				<!--		<span class="button get" id="guide"><img class="thumb" alt="user guide" src="img/userguide.png"/><br/><a href="">User Guide</a></span>-->
+					</span>
+					
+					<h3 id="license">Software License</h3>
+					<p> SkePU is licensed under the <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a> as published by the Free Software Foundation (version 3 or later). For more information, please see the license file included in the downloadable source code.</p>
+					
+					<h3 id="system">System Requirements</h3>
+					<p>SkePU requires a target compiler compatible with the C++11 standard (or later). Additionally, a system able to both compile and run the <a href="http://llvm.org/docs/GettingStarted.html#git-mirror">LLVM system</a>, including <em>Clang</em>, is required (this needs not to be the target system).</p>
+					<p>SkePU is tested with GCC 4.9+ on Linux and macOS, Apple LLVM (Clang) 8.0 on macOS.</p>
+					<p>The following optional features require special compiler support:</p>
+					<ul>
+						<li><em>CUDA</em> backend requires CUDA (version 7 or later) compiler and runtime, and hardware support.</li>
+						<li><em>OpenCL</em> backend requires an OpenCL runtime and hardware support.</li>
+						<li><em>OpenMP</em> backend requires an OpenMP-enabled compiler (e.g., GCC).</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2 id="example">Example</h2>
+					{% include_relative codesamples/ppmcc.html %}
+				</section>
+				
+				<section>
+					<h2 id="skeletons">Skeletons</h2>
+					
+					<p>SkePU contains the skeletons <a href="#map">Map</a>, <a href="#reduce">Reduce</a>, <a href="#mapreduce">MapReduce</a>, <a href="#mapoverlap">MapOverlap</a>, <a href="#scan">Scan</a>, and <a href="#call">Call</a> (and several new skeletons are currently under development). They are presented separately below, with a short program snippet exemplifying their usage. In practice, repeatedly calling skeletons and using multiple types of skeletons is encouraged, to fully utilize the advantages of SkePU such as the smart containers.</p>
+					
+					<h3 id="map">Map</h3>
+					<p>The Map skeleton represents a flat, data-parallel computation without dependencies. Each sub-computation is an application of the user function supplied to the Map. It works on SkePU containers by, element for element, applying the user function (<code>sum</code> in the example below) multiple times. Any number of equally sized containers can be supplied as arguments; Map will pass one element from each. For more general computations, it is also possible to supply extra arguments as needed which can be accessed freely inside the user function. These can be containers or scalar values.</p>
+					<p>Map can also be used without element-wise arguments, with the number of sub-computations controlled by the size of the output container only . Programs can take advantage of this, and the fact that the user function can be made aware of the index of the currently processed element, to create interesting use-cases. See, for example, the Mandelbrot program in the distribution.</p>
+					
+					{% include_relative codesamples/map.html %}
+
+					<h3 id="reduce">Reduce</h3>
+
+					<p>Reduce performs an associative reduction. Two modes are available: 1D reduction and 2D reduction. An instance of the former type accepts a vector or a matrix, producing a scalar or a vector respectively as the result; the latter only works on matrices. For matrix reductions, the primary direction of the reduction (row-first or column-first) can be controlled.</p>
+
+					{% include_relative codesamples/reduce.html %}
+
+					<h3 id="mapreduce">MapReduce</h3>
+
+					<p>MapReduce is a sequence of <a href="#map">Map</a> and <a href="#reduce">Reduce</a> and offers the features of both, with some limitations, for example only 1D reductions are supported. An instance is created from two user functions, one for mapping and one for reducing. The reduce function should be associative.</p>
+					<p>As with Map, the possbilities of zero element-wise arity and element-index awarneness in the user function create interesting possibilities. The Taylor program in the distribution uses this to perform Taylor series approximations with zero data movement overhead. A more typical dot product computation is used in the example below.</p>
+
+					{% include_relative codesamples/mapreduce.html %}
+
+					<h3 id="scan">Scan</h3>
+					
+					<p>Scan performs a generalized prefix sum operation, either inclusive or exclusive.</p>
+					
+					{% include_relative codesamples/scan.html %}
+					
+					<h3 id="mapoverlap">MapOverlap</h3>
+					
+					<p>MapOverlap represents a stencil operation. It is similar to Map, but instead of a single element, a region of elements is available in the user function. The region is passed as a pointer to the center element, so manual pointer arithmetic is required to access the data.</p>
+					
+					<p>A MapOverlap can either be one-dimensional, working on vectors or matrices (separable computations only) or two-dimensional for matrices. The type is set per-instance and deduced from the user function. Different edge handling modes are available, such as overlapping or clamping.</p>
+					
+					{% include_relative codesamples/mapoverlap.html %}
+					
+					<h3 id="mappairs">MapPairs</h3>
+					
+					<p>A skeleton computing the <em>matrix</em> that results from invoking an operator on all Cartesian pairs of elements from two (sets of) input <em>vectors</em>.</p>
+					
+					{% include_relative codesamples/mappairs.html %}
+					
+					
+					<h3 id="mappairsreduce">MapPairsReduce</h3>
+					
+					<p>An efficient chaining of <a href="#mappairs">MapPairs</a> and <a href="#reduce">Reduce</a> operations, with the reduction operating along the rows or columns of the intermediate matrix.</p>
+					
+					{% include_relative codesamples/mappairsreduce.html %}
+					
+				</section>
+				
+				<section>
+					<h2 id="applications">Applications</h2>
+
+					<p>Several <em>test applications</em> have been developed using the SkePU skeletons, including:</p>
+					<ul>
+						<li><a href="https://en.wikipedia.org/wiki/Taylor_series">Taylor</a> approximation,</li>
+						<li>a <a href="https://en.wikipedia.org/wiki/Runge–Kutta_methods">Runge-Kutta</a> ODE solver,
+						<li>separable and non-separable 2D image <a href="https://en.wikipedia.org/wiki/Convolution">convolution</a> filters,
+						<li><a href="https://en.wikipedia.org/wiki/Successive_over-relaxation">Successive Over-Relaxation</a> (SOR),
+						<li><a href="https://en.wikipedia.org/wiki/Coulomb%27s_law">Coulombic</a> potential grid application,
+						<li><a href="https://en.wikipedia.org/wiki/N-body_simulation">N-body simulation</a>,
+						<li><a href="https://en.wikipedia.org/wiki/LU_decomposition">LU decomposition</a>,
+						<li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot</a> fractals,
+						<li><a href="https://en.wikipedia.org/wiki/Smoothed-particle_hydrodynamics">Smooth Particle Hydrodynamics</a> (SPH, fluid dynamics shocktube simulation),
+						<li><a href="https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient">Pearson Product-Moment Correlation Coefficient</a> (PPMCC),
+						<li><a href="https://en.wikipedia.org/wiki/Mean_squared_error">Mean Squared Error</a> (MSE), and
+						<li><a href="https://en.wikipedia.org/wiki/Median_filter">median filtering</a>.
+					</ul>
+					
+					<p>The source code for some of these is included in the SkePU distribution.</p>
+				</section>
+				
+				<section>
+					<h2 id="publications">Publications</h2>
+					<p style="text-align: center;">
+						<a href="#p2010">2010</a> -
+						<a href="#p2011">2011</a> -
+						<a href="#p2012">2012</a> -
+						<a href="#p2013">2013</a> -
+						<a href="#p2014">2014</a> -
+						<a href="#p2015">2015</a> -
+						<a href="#p2016">2016</a> -
+						<a href="#p2017">2017</a> -
+						<a href="#p2018">2018</a> -
+						<a href="#p2019">2019</a> -
+						<a href="#p2020">2020</a>
+					</p>
+					
+					<span class="buttons">
+						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster.jpg"/><br/><a href="docs/skepu2-poster.pdf">Poster (2016)</a></span>
+						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster.jpg"/><br/><a href="docs/mcc2017-poster.pdf">Poster (2017)</a></span>
+						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster.jpg"/><br/><a href="docs/hlpp2019-poster.pdf">Poster (2019)</a></span>
+						<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/tutorial-titlepage.png"/><br/><a href="docs/MCC2019-SkePU-Tutorial.pdf">Tutorial<br>(2019)</a></span>
+						<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/slides.png"/><br/><a href="docs/presentation-excess.pdf">Presentation<br>(2016)</a></span>
+					</span>
+
+					<h3 id="p2010">2010</h3>
+					<ul>
+						<li>Johan Enmyren and Christoph W. Kessler.<br><b>SkePU: A multi-backend skeleton programming library for multi-GPU systems.</b><br/>In Proc. 4th Int. Workshop on High-Level Parallel Programming and Applications (HLPP-2010), Baltimore, Maryland, USA. ACM, September 2010 (<a href="SkePU-HLPP-2010.pdf">PDF</a>)</li>
+						<li>Johan Enmyren, Usman Dastgeer and Christoph Kessler.<br><b>Towards a Tunable Multi-Backend Skeleton Programming Framework for Multi-GPU Systems.</b><br/>Proc. MCC-2010 Third Swedish Workshop on Multicore Computing, Gothenburg, Sweden, Nov. 2010.</li>
+					</ul>
+					
+					<h3 id="p2011">2011</h3>
+					<ul>
+						<li>Usman Dastgeer, Johan Enmyren, and Christoph Kessler.<br><b>Auto-tuning SkePU: A Multi-Backend Skeleton Programming Framework for Multi-GPU Systems.</b><br/>Proc. IWMSE-2011, Hawaii, USA, May 2011, ACM  (<a href="http://portal.acm.org/citation.cfm?doid=1984693.1984697">ACM DL</a>)<br>A previous version of this article was also presented at: Proc. Fourth Workshop on Programmability Issues for Multi-Core Computers (MULTIPROG-2011), January 23, 2011, in conjunction with HiPEAC-2011 conference, Heraklion, Greece.</li>
+						<li>Usman Dastgeer and Christoph Kessler.<br><b>Flexible Runtime Support for Efficient Skeleton Programming on Heterogeneous GPU-based Systems</b><br>Proc. ParCo 2011: International Conference on Parallel Computing, Ghent, Belgium, 2011. (<a onclick="var that=this;_gaq.push(['_trackEvent','Download','PDF',this.href]);setTimeout(function(){location.href=that.href;},200);return false;" href="publications/skepu_starpu_parco.pdf">PDF</a>)</li>
+						<li>Usman Dastgeer.<br><b>Skeleton Programming for Heterogeneous GPU-based Systems</b>.<br>Licentiate thesis. Thesis No. 1504, Department of Computer and Information Science, Link&ouml;ping University, October, 2011 (<a href="http://liu.diva-portal.org/smash/record.jsf?pid=diva2:437140">LIU EP</a>)</li>
+					</ul>
+					
+					<h3 id="p2012">2012</h3>
+					<ul>
+						<li>Christoph Kessler, Usman Dastgeer, Samuel Thibault, Raymond Namyst, Andrew Richards, Uwe Dolinsky, Siegfried Benkner, Jesper Larsson Tr&auml;ff and Sabri Pllana.<br/><b>Programmability and Performance Portability Aspects of Heterogeneous Multi-/Manycore Systems</b>.<br/>Proc. DATE-2012 conference on Design Automation and Testing in Europe, Dresden, March 2012. (<a href="http://hal.inria.fr/hal-00776610/PDF/date12-paper.pdf">PDF (author version)</a>, <a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6176582&tag=1">PDF at IEEE Xplore</a>)</li>
+						<li>Usman Dastgeer and Christoph Kessler.<br/><b>A performance-portable generic component for 2D convolution computations on GPU-based systems</b>. <br>Proc. MULTIPROG-2012 Workshop at HiPEAC-2012, Paris, Jan. 2012. (<a onclick="var that=this;_gaq.push(['_trackEvent','Download','PDF',this.href]);setTimeout(function(){location.href=that.href;},200);return false;" href="publications/multiprog_2012_convol.pdf">PDF</a>)</li>
+					</ul>
+					
+					<h3 id="p2013">2013</h3>
+					<ul>
+						<li>Usman Dastgeer, Lu Li, Christoph Kessler.<br><b>Adaptive implementation selection in the SkePU skeleton programming library</b>.<br>Proc. 2013 Biennial Conference on Advanced Parallel Processing Technology (APPT-2013), Stockholm, Sweden, Aug. 2013. (<a onclick="var that=this;_gaq.push(['_trackEvent','Download','PDF',this.href]);setTimeout(function(){location.href=that.href;},200);return false;" href="publications/skepu_tuning2013_appt.pdf">PDF</a>)</li>
+						<li>Mudassar Majeed, Usman Dastgeer, Christoph Kessler.<br><b>Cluster-SkePU: A Multi-Backend Skeleton Programming Library for GPU Clusters</b>.<br>Proc. Int. Conf. on Parallel and Distr. Processing Techniques and Applications (PDPTA-2013), Las Vegas, USA, July 2013. (<a href="http://world-comp.org/p2013/PDP2737.pdf">PDF</a>)<!--(<a onclick="var that=this;_gaq.push(['_trackEvent','Download','PDF',this.href]);setTimeout(function(){location.href=that.href;},200);return false;" href="publications/ClusterSkepUPDPTA.pdf">PDF</a>)--></li>
+					</ul>
+
+					<h3 id="p2014">2014</h3>
+					<ul>
+						<li>Usman Dastgeer.<br><b>Performance-Aware Component Composition for GPU-based Systems.</b><br>PhD thesis, Link&ouml;ping Studies in Science and Technology, Dissertation No. 1581, Link&ouml;ping University, May 2014. (<a href="http://www.diva-portal.org/smash/record.jsf?pid=diva2:712422">LiU-EP</a>)</li>
+						<li>Christoph Kessler, Usman Dastgeer and Lu Li.<br><b>Optimized Composition: Generating Efficient Code for Heterogeneous Systems from Multi-Variant Components, Skeletons and Containers.</b><br>In: F. Hannig and J. Teich (eds.), Proc. First Workshop on Resource awareness and adaptivity in multi-core computing (Racing 2014), May 2014, Paderborn, Germany, pp. 43-48. (<a href="http://arxiv.org/find/cs/1/rn:+Racing%252F2014%252F09/0/1/0/all/0/1?fromIndex=1405%2E2281&reportNo=Racing/2014/09">PDF</a>)</li>
+						<li>Usman Dastgeer and Christoph Kessler.<br><b>Smart Containers and Skeleton Programming for GPU-based Systems.</b><br>Proc. of the 7th Int. Symposium on High-level Parallel Programming and Applications (HLPP'14), Amsterdam, July 2014. (<a href="https://drive.google.com/uc?export=download&id=0B1_aC1KCNaoFZGdBZWhHQTE3OTA">PDF slides</a>)</li>
+					</ul>
+
+					<h3 id="p2015">2015</h3>
+					<ul>
+						<li>Usman Dastgeer and Christoph Kessler.<br><b>Smart Containers and Skeleton Programming for GPU-based Systems.</b><br><i>Int. Journal of Parallel Programming</i> 44(3):506-530, June 2016 (online: March 2015), Springer.<a href="http://dx.doi.org/10.1007/s10766-015-0357-6">DOI: 10.1007/s10766-015-0357-6.</a></li>
+					</ul>
+					
+					<h3 id="p2016">2016</h3>
+					<ul>
+						<li>Oskar Sj&ouml;str&ouml;m, Soon-Heum Ko, Usman Dastgeer, Lu Li, Christoph Kessler:<br><b>Portable Parallelization of the <i>EDGE</i> CFD Application for GPU-based Systems using the SkePU Skeleton Programming Library.</b><br>Proc. ParCo-2015 conference, Edinburgh, UK, 1-4 Sep. 2015.<br>Published in: Gerhard R. Joubert, Hugh Leather, Mark Parsons, Frans Peters, Mark Sawyer (eds.): <i>Advances in Parallel Computing</i>, Volume 27: <i>Parallel Computing: On the Road to Exascale</i>, IOS Press, April 2016, pages 135-144. <a href="http://ebooks.iospress.nl/volumearticle/42651">DOI 10.3233/978-1-61499-621-7-135.</a></li>
+						<li>Sebastian Thorarensen, Rosandra Cuello, Christoph Kessler, Lu Li and Brendan Barry:<br><b>Efficient Execution of SkePU Skeleton Programs on the Low-power Multicore Processor Myriad2.</b><br/>Proc. 24th Euromicro International Conference on Parallel, Distributed, and Network-Based Processing (PDP 2016), pages 398-402, IEEE, Feb. 2016. <a href="http://dx.doi.org/10.1109/PDP.2016.123">DOI: 10.1109/PDP.2016.123</a>.</li>
+					</ul>
+					
+					<h3 id="p2017">2017</h3>
+					<ul>
+						<li>Christoph W. Kessler, Sergei Gorlatch, Johan Enmyren, Usman Dastgeer, Michel Steuwer, Philipp Kegel.<br><b>Skeleton Programming for Portable Many-Core Computing.</b> Book Chapter (Chapter 6) in: S. Pllana and F. Xhafa, eds., <a href="http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0470936908.html"><i>Programming Multi-Core and Many-Core Computing Systems</i></a>, Wiley Interscience, New York, March 2017, pages 121-142. <i>(accepted 2011; this is about SkePU 1)</i></li>
+					</ul>
+
+					<h3 id="p2018">2018</h3>
+					<ul>
+						<li>August Ernstsson, Lu Li, Christoph Kessler:<br/>
+						<a href="http://doi.org/10.1007/s10766-017-0490-5">
+						<b>SkePU 2: Flexible and type-safe skeleton programming for heterogeneous parallel systems.</b></a><br/>
+						<i>Int. Journal of Parallel Programming</i> 46(1):62-80, Feb. 2018 (online: Jan. 2017). <a href="http://doi.org/10.1007/s10766-017-0490-5">doi:10.1007/s10766-017-0490-5</a></li>
+					</ul>
+
+					<h3 id="p2019">2019</h3>
+					<ul>
+						<li>August Ernstsson, Christoph Kessler:<br>
+						<a href="https://doi.org/10.1002/cpe.5003">
+						<b>Extending smart containers for data locality-aware skeleton programming.</b></a><br>
+						<i>Concurrency and Computation: Practice and Experience</i> 31(5), March 2019, Wiley.
+						(Online: Oct. 2018)
+						<a href="https://doi.org/10.1002/cpe.5003">DOI: 10.1002/cpe.5003</a>
+						</li>
+						<li>Tomas Öhberg, August Ernstsson, Christoph Kessler:<br>
+						<a href="https://link.springer.com/article/10.1007%2Fs11227-019-02824-7">
+						<b>Hybrid CPU-GPU execution support in the skeleton programming framework SkePU.</b></a><br>
+						<i>The Journal of Supercomputing</i>, Springer. March 2019 (online).
+						<a href="https://link.springer.com/article/10.1007%2Fs11227-019-02824-7">DOI: 10.1007/s11227-019-02824-7</a> (Open Access)
+						</li>
+					</ul>
+
+					<h3 id="p2020">2020</h3>
+					<ul>
+						<li>August Ernstsson, Christoph Kessler:<br>
+						<a href="http://ebooks.iospress.nl/volumearticle/53953">
+						<b>Multi-variant User Functions for Platform-aware Skeleton Programming.</b></a><br>
+						Proc. of ParCo-2019 conference, Prague, Sep. 2019, in:
+						I. Foster et al. (Eds.), <i>Parallel Computing: Technology Trends</i>,
+						series: <i>Advances in Parallel Computing</i>, vol. 36, IOS press, March 2020, pages 475-484. DOI: 10.3233/APC200074.<br>
+						<a href="https://www.ida.liu.se/~chrke55/papers/APC-36-APC200074.pdf">PDF (open access)</a>
+						</li>
+					</ul>
+
+					
+					<h2 id="work">Ongoing work</h2>
+					<p>SkePU is a work in progress.  Future work includes adding support for more skeletons and containers, e.g. for sparse matrix operations; for further task-parallel skeletons; and for other types of target architectures.</p>
+					<p>If you would like to contribute, please let us know.</p>
+
+					<h3>Related projects</h3>
+					<ul>
+						<li><a href="https://www.ida.liu.se/labs/pelab/meterpu/">MeterPU</a>: Generic portable measurement framework for multicore CPU and multi-GPU systems</li>
+					</ul>
+					
+					<h2 id="contact">Contact</h2>
+					<ul>
+						<li><a href="https://liu.se/en/employee/auger33">August Ernstsson</a></li>
+						<li><a href="http://www.ida.liu.se/~chrke/">Prof. Christoph Kessler</a></li>
+						<li><a href="https://liu.se/en/employee/johah30">Johan Ahlqvist</a></li>
+					</ul>
+					<p>For reporting feature suggestions, bug reports, and other comments: please email to "&lt;firstname&gt; DOT &lt;lastname&gt; AT liu DOT se".</p>
+				</section>
+				
+				<section>
+					<h2 id="acknowledgements">Acknowledgments</h2>
+					
+					<p>This work was partly funded by the EU FP7 projects <a href="http://www.peppher.eu/">PEPPHER</a> and <a href="http://www.excess-project.eu/">EXCESS</a>, by EU H2020 project <a href="https://exa2pro.eu/">EXA2PRO</a>, by <a href="http://www.e-science.se">SeRC</a> project OpCoReS, and by <a href="http://www.ida.liu.se/ext/cugs/">CUGS</a>.</p>
+					<p>Previous major contributors to SkePU include <em>Johan Enmyren</em> and <em>Usman Dastgeer</em>. The multivector container for MapArray (note: obsolete in SkePU 2), and the SkePU 1.2 user guide have been added by <em>Oskar Sj&ouml;str&ouml;m</em>.</p>
+					<p>Streaming support for CUDA in SkePU 1.2 has been contributed by <em>Claudio Parisi</em> from University of Pisa, Italy, in a recent cooperation with the FastFlow project.</p>
+					<p>SkePU example programs in the public distribution have been contributed by Johan Enmyren, Usman Dastgeer, <em>Mudassar Majeed</em> and <em>Lukas Gillsj&ouml;</em>.</p>
+					<p>Experimental implementations of SkePU for other target platforms (not part of the public distribution) have been contributed e.g. by Mudassar Majeed, <em>Rosandra Cuello</em> and <em>Sebastian Thorarensen</em>.</p>
+				</section>
+				
+				<p id="logos">
+					<a href="http://ec.europa.eu/"><img src="img/logos/ec.jpg" alt="European Commission"/></a>
+					<!--
+					<a href="https://ec.europa.eu/research/fp7/"><img src="img/logos/fp7.png" alt="EU FP7"/></a>
+					-->
+					<a class="noborder" href="http://www.peppher.eu"><img src="img/logos/peppher.jpg" alt="PEPPHER"/></a>
+					<a href="http://www.excess-project.eu"><img src="img/logos/excess.png" alt="EXCESS"/></a>
+					<a href="https://exa2pro.eu"><img src="img/logos/exa2pro-logo.png" alt="EXA2PRO"/></a>
+					<a href="http://www.e-science.se"><img src="img/logos/serc.png" alt="SERC"/></a>
+					<a href="http://www.ida.liu.se/ext/cugs/"><img src="img/logos/cugs.jpg" alt="CUGS"/></a>
+				</p>
+				
+			</article>
+			
+			<span class="menu">
+				<a class="menu-item" href="#intro">Introduction</a> &middot;
+				<a class="menu-item" href="#downloads">Downloads</a> &middot;
+				<a class="menu-item" href="#example">Example</a> &middot;
+				<a class="menu-item" href="#skeletons">Skeletons</a> &middot;
+				<a class="menu-item" href="#applications">Applications</a> &middot;
+				<a class="menu-item" href="#publications">Publications</a> &middot;
+				<a class="menu-item" href="#contact">Contact</a> &middot;
+				<a class="menu-item" href="#acknowledgements">Acknowledgements</a> &middot;
+				<a class="menu-item" style="color: silver !important;" href="skepu1/">SkePU 1</a>
+			</span>
+			
+		</div>
+	</body>
+</html>
