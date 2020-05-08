@@ -3,11 +3,11 @@
 <!doctype HTML>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>SkePU</title>
-	<link rel="stylesheet" href="style.css"/>
-</head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>SkePU</title>
+		<link rel="stylesheet" href="style.css"/>
+	</head>
 	<body>
 		<div id="container">
 			
@@ -36,7 +36,7 @@
 				<section>
 					<h2 id="intro">Introduction</h2>
 					<p><em>Skeleton programming</em> is a high-level (parallel) programming approach where an application is written with the help of <em>(algorithmic) skeletons</em>. A skeleton is a pre-defined, generic programming construct such as <i>map</i>, <i>reduce</i>, <i>scan</i>, <i>farm</i>, <i>pipeline</i> etc. that implements a common specific pattern of computation and data dependence, that might have efficient implementations for parallel, distributed or heterogeneous computer systems, and that can be customized with (sequential) user-defined code parameters. Skeletons provide a high degree of abstraction and portability with a quasi-sequential programming interface, as their implementations encapsulate all low-level and platform-specific details such as parallelization, synchronization, communication, memory management, accelerator usage and other optimizations.</p>
-				<p><em>SkePU</em> is an open-source skeleton programming framework for multicore CPUs and multi-GPU systems. 
+				<p><em>SkePU</em> is an open-source skeleton programming framework for multicore CPUs and multi-GPU systems.
 It is a C++ template library with (in its current version) eight data-parallel skeletons, four generic data-container types for operands, and support for execution on multi-GPU systems both with CUDA and OpenCL and for execution on clusters.</p>
 					
 					<h3>Main features</h3>
@@ -46,7 +46,7 @@ It is a C++ template library with (in its current version) eight data-parallel s
 						<li><a href="#map">Map</a>: Data-parallel element-wise application of a function with arbitrary arity.</li>
 						<li><a href="#reduce">Reduce</a>: Reduction with 1D and 2D variations.</li>
 						<li><a href="#mapreduce">MapReduce</a>: Efficient chaining of Map and Reduce.</li>
-						<li><a href="#mapoverlap">MapOverlap</a>: Stencil operation in 1D and 2D.</li>
+						<li><a href="#mapoverlap">MapOverlap</a>: Stencil operation in 1D, 2D, 3D, and 4D.</li>
 						<li><a href="#scan">Scan</a>: Generalized prefix sum.</li>
 						<li><a href="#mappairs">MapPairs</a>: Cartesian product-style computation.</li>
 						<li><a href="#mappairsreduce">MapPairsReduce</a>: Efficient chaining of MapPairs and Reduce.</li>
@@ -73,7 +73,7 @@ It is a C++ template library with (in its current version) eight data-parallel s
 					
 					<p>SkePU 2 removes the MapArray and Generate skeletons in favor of a generalized <a href="#map">Map</a> and adds the <a href="#call">Call</a> skeleton. It is not backwards-compatible with programs written for SkePU 1.x. However, translating existing source-code is straightforward as each skeleton in SkePU 1.x has a direct—or simpler—equivalent in SkePU 2 and later.</p>
 					
-					<p>SkePU 3 builds on the modern foundation of SkePU 2 and adds <em>new skeletons, new smart containers, an MPI backend</em> for cluster execution and improves the interface and semantics of SkePU applciations. It is not backwards-compatible with SkePU 2 programs, but the changes are of limited scope and old applications can be adapted with little effort.</p>
+					<p>SkePU 3 builds on the modern foundation of SkePU 2 and adds <em>new skeletons, new smart containers, an MPI backend</em> for cluster execution and improves the interface and semantics of SkePU applications. It is not backwards-compatible with SkePU 2 programs, but the changes are of limited scope and old applications can be adapted with little effort.</p>
 					
 				</section>
 				
@@ -196,11 +196,11 @@ It is a C++ template library with (in its current version) eight data-parallel s
 					</p>
 					
 					<span class="buttons">
-						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster.jpg"/><br/><a href="docs/skepu2-poster.pdf">Poster (2016)</a></span>
-						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster.jpg"/><br/><a href="docs/mcc2017-poster.pdf">Poster (2017)</a></span>
-						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster.jpg"/><br/><a href="docs/hlpp2019-poster.pdf">Poster (2019)</a></span>
-						<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/tutorial-titlepage.png"/><br/><a href="docs/MCC2019-SkePU-Tutorial.pdf">Tutorial<br>(2019)</a></span>
-						<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/slides.png"/><br/><a href="docs/presentation-excess.pdf">Presentation<br>(2016)</a></span>
+							<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/tutorial-titlepage.png"/><br/><a href="docs/MCC2019-SkePU-Tutorial.pdf">Tutorial<br>(2019)</a></span>
+						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster-2019.jpg"/><br/><a href="docs/hlpp2019-poster.pdf">Poster<br/>(2019)</a></span>
+						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster-2017.jpg"/><br/><a href="docs/mcc2017-poster.pdf">Poster<br/>(2017)</a></span>
+						<span class="button get" id="poster"><img class="thumb" alt="poster" src="img/poster-2016.jpg"/><br/><a href="docs/skepu2-poster.pdf">Poster<br/>(2016)</a></span>
+						<!--	<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/slides.png"/><br/><a href="docs/presentation-excess.pdf">Presentation<br>(2016)</a></span>-->
 					</span>
 
 					<h3 id="p2010">2010</h3>
