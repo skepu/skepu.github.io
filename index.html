@@ -35,8 +35,9 @@
 				
 				<section>
 					<h2 id="intro">Introduction</h2>
-					<p><em>Skeleton programming</em> is an approach where an application is written with the help of <em>skeletons</em>. A skeleton is a pre-defined, generic component such as map, reduce, scan, farm, pipeline etc. that implements a common specific pattern of computation and data dependence, and that can be customized with (sequential) user-defined code parameters. Skeletons provide a high degree of abstraction and portability with a quasi-sequential programming interface, as their implementations encapsulate all low-level and platform-specific details such as parallelization, synchronization, communication, memory management, accelerator usage and other optimizations.</p>
-					<p><em>SkePU</em> is an open-source skeleton programming framework for multicore CPUs and multi-GPU systems. It is a C++ template library with six data-parallel and one task-parallel skeletons, two generic container types, and support for execution on multi-GPU systems both with CUDA and OpenCL.</p>
+					<p><em>Skeleton programming</em> is a high-level (parallel) programming approach where an application is written with the help of <em>(algorithmic) skeletons</em>. A skeleton is a pre-defined, generic programming construct such as <i>map</i>, <i>reduce</i>, <i>scan</i>, <i>farm</i>, <i>pipeline</i> etc. that implements a common specific pattern of computation and data dependence, that might have efficient implementations for parallel, distributed or heterogeneous computer systems, and that can be customized with (sequential) user-defined code parameters. Skeletons provide a high degree of abstraction and portability with a quasi-sequential programming interface, as their implementations encapsulate all low-level and platform-specific details such as parallelization, synchronization, communication, memory management, accelerator usage and other optimizations.</p>
+				<p><em>SkePU</em> is an open-source skeleton programming framework for multicore CPUs and multi-GPU systems. 
+It is a C++ template library with (in its current version) eight data-parallel skeletons, four generic data-container types for operands, and support for execution on multi-GPU systems both with CUDA and OpenCL and for execution on clusters.</p>
 					
 					<h3>Main features</h3>
 					<!--<img align="right" width="360px" alt="SkePU skeletons" src="skeletons-overview.jpg">-->
@@ -54,7 +55,7 @@
 					
 					<h4>Multiple back-ends and multi-GPU support</h4>
 					
-					<p>Each skeleton has several different backends (implementations): for sequential C, OpenMP, OpenCL, CUDA, and multi-GPU OpenCL and CUDA. There is also an experimental back-end for MPI (which is not part of the public distribution below).</p>
+					<p>Each skeleton has several different backends (implementations): for sequential C, OpenMP, OpenCL, CUDA, and multi-GPU OpenCL and CUDA. There is also a new back-end based on MPI and StarPU for execution on a cluster available, which supports some of the skeletons.</p>
 					
 					<h4>Tunable context-aware implementation selection</h4>
 					
