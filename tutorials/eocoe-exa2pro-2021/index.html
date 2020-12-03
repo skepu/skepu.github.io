@@ -1,0 +1,275 @@
+---
+---
+<!doctype HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkePU Tutorial at EoCoE/EXA2PRO workshop, Feb. 23, 2021</title>
+<link rel="stylesheet" href="../../style.css"/>
+</head>
+<body>
+<div id="container">
+<span class="menu">
+<a class="menu-item" href="https://skepu.github.io">SkePU</a> &middot;
+<a class="menu-item" href="#abstract">Tutorial Abstract</a> &middot;
+<a class="menu-item" href="#outline">Outline</a> &middot;
+<a class="menu-item" href="#prerequisite">Prerequisite Knowledge</a> &middot;
+<a class="menu-item" href="#requirements">Special Requirements</a> &middot;
+<a class="menu-item" href="#organizers">Organizers</a> &middot;
+<a class="menu-item" href="https://exa2pro.eu">EXA2PRO</a>
+</span>
+			
+<article>
+	<div id="logo-container"><img id="logo" src="../../img/logos/skepu.png" alt="SkePU logo"/></div>
+<!--
+	<p id="tagline">SkePU Tutorial at EoCoE/EXA2PRO workshop, 23 Feb. 2021</p>
+-->
+</p>
+<p>
+<center>
+	<h1>SkePU Tutorial at EoCoE/EXA2PRO workshop, 23 Feb. 2021</h1>
+</center>
+</p>
+<p>
+<center>
+        <b>Christoph Kessler, August Ernstsson, Johan Ahlqvist</b><br>
+        Link&ouml;ping University, Link&ouml;ping, Sweden
+</center>
+</p>
+
+				
+<section>
+<h2 id="abstract">Tutorial Abstract</h2>
+
+<p>
+<a href="https://skepu.github.io">SkePU</a> is a C++ based open-source framework for high-level
+portable programming of heterogeneous parallel systems
+using <i>algorithmic skeletons</i>. 
+Skeletons are generic programming constructs 
+based on higher-order functions,
+such as <i>map</i>, <i>stencil</i>, <i>reduce</i>, <i>scan</i>, 
+that implement algorithmic patterns for which platform-specific parallel implementations may exist.
+Skeletons provide a high degree of abstraction and portability 
+with a quasi-sequential programming interface, as their implementations 
+encapsulate all low-level and platform-specific details 
+such as parallelization, synchronization, communication, memory management, 
+accelerator usage and other optimizations.
+</p>
+
+<p>
+From the same high-level source code using SkePU skeletons and
+data-containers, the framework generates target code for
+multicore CPU execution, CUDA and OpenCL code for execution
+on GPU and multi-GPU systems 
+(and other OpenCL devices such as Xeon-Phi), hybrid CPU-GPU
+execution, and on HPC clusters. 
+SkePU transparently performs a number of
+run-time optimizations, including data transfer minimization,
+data locality optimizations and 
+auto-tuned back-end selection. 
+</p>
+
+<p>
+The SkePU framework is organized
+as an include-only template library plus a light-weight
+pre-compiler based on LLVM clang; the cluster backend
+uses the MPI support in the StarPU runtime system.
+The development of SkePU started in 2010, and we recently
+presented the third generation of the framework.
+Beyond cooperative research projects such as 
+<a href="https://exa2pro.eu">H2020 EXA2PRO</a>, 
+we use SkePU since
+several years as a lab environment for teaching high-level
+parallel programming in our 
+<a href="https://www.ida.liu.se/~TDDD56">master-level course on multicore and GPU programming</a>
+at 
+<a href="https://www.liu.se">Link&ouml;ping University</a>, Sweden.
+</p>
+
+<p>
+In this tutorial we present SkePU with its skeletons and
+data-container types, guide participants through 
+some hands-on programming exercises in SkePU, 
+and also point out some
+of the more recently added new features 
+such as multi-variant user functions 
+(which can be used by platform expert programmers 
+to exploit 
+e.g. custom SIMD instructions without compromising
+the portability of the SkePU program).
+The source code of SkePU is available at
+<a href="https://skepu.github.io">skepu.github.io</a>;
+for fast installation 
+we also provide a binary
+distribution of SkePU for x86-64 Linux and a docker image.
+</p>
+<p>
+The objective of this tutorial is to provide a good overview of the capabilities
+and ease of use of SkePU to potential users in industry 
+and academia, as well as to researcher colleagues 
+in EoCoE and other HPC related projects.
+</p>
+</section>
+				
+<section>
+<h2 id="outline">Schedule</h2>
+
+<p>
+Time frame: 23/2/2021, 09:00-12:30 CET
+</p>
+					
+<p>
+<b>1. Introduction to Programming in SkePU</b><br>
+(45min,  A. Ernstsson / C. Kessler)
+</p>
+
+<p>
+SkePU (https://skepu.github.io) is a C++ based high-level programming framework
+for heterogeneous parallel systems and clusters. Its programming interface is based
+on so-called algorithmic skeletons, i.e., predefined generic program constructs
+based on higher-order functions, which express common parallelizable patterns
+such as map, reduce, stencil, or scan, which can be customized in problem-specific
+C++ code, and for which sequential and parallel implementations are available
+for different execution platforms. From the single, quasi-sequential SkePU
+source code, platform-specific parallel code is automatically created.
+In this presentation, we give a more in-depth overview of the SkePU concepts
+and programming interface, preparing for the subsequent exercise sessions.
+</p>
+
+<p>
+<b>2. Programming in SkePU: Guided Exercise and Advanced Issues</b><br>
+(45min, A. Ernstsson, J. Ahlqvist)
+</p>
+
+<p>
+We demonstrate programming in SkePU with a complete example jointly
+for all participants, and also discuss some performance aspects and advanced issues.
+</p>
+
+<p>
+Break (30min)
+</p>
+
+<p>
+<b>3. Individual work session</b><br>
+(90min, A. Ernstsson, J. Ahlqvist, C. Kessler)
+</p>
+
+<p>
+For this session we expect that participants install or have installed SkePU on
+some Linux system accessible to them (GPU or cluster architecture is not required).
+For fast installation we provide a binary x86-64 Linux distribution of SkePU
+(for ubuntu 18.04 and possibly other Linux variants) as well as a docker image;
+it is also possible to install SkePU from source, see 
+<a href="https://skepu.github.io">https://skepu.github.io</a>.
+We encourage participants to bring their own problems or C++ application codes
+for porting to SkePU. As alternative, we will provide further example problems for
+participants to experiment with programming in SkePU at their own pace.
+We will set up a shared queueing mechanism for providing individual assistance
+on a first-come first-served basis.
+</p>
+
+</section>
+		
+<section>
+<h2 id="prerequisite">Prerequisite Knowledge and Special Requirements</h2>
+
+<p>
+<b>Prerequisite Knowledge:</b>
+</p>
+<p>
+General interest and some background in parallel and heterogeneous computing.
+</p>
+<p>
+For the programming exercises, some background in modern C++ and programming under Linux.
+</p>
+
+</section>
+		
+<!--
+<section>
+ -->
+ <p id="requirements"><b>Special Requirements:</b></p>
+
+<p>
+  SkePU runs under Linux.
+  We encourage participants to bring their laptop for
+  hands-on programming in SkePU, and we try to help with
+  installation issues if there should be any.
+</p>
+
+<p>
+  We will also demo some examples on screen for all participants 
+  who prefer not to try it out immediately.
+</p>
+
+<p>
+  We encourage participants to install SkePU before the
+  tutorial so we can make better use of the time.
+  Detailed instructions will follow. 
+</p>
+
+</section>
+				
+<section>
+<h2 id="organizers">About the Organizers</h2>
+					
+<p>
+<a href="http://www.ida.liu.se/~chrke"><b>Christoph Kessler</b></a> 
+is a professor for Computer Science at <a href="https://www.liu.se">Link&ouml;ping University</a>, Sweden,
+where he leads the Programming Environment Laboratory's research group on compiler technology and parallel computing.
+His research interests include parallel programming models, compiler technology, code generation, combinatorial optimization, and software composition/synthesis.
+He has <a href="http://www.ida.liu.se/~chrke/publ.html">published</a> two books, several book chapters and more than 120 scientific papers in international peer-reviewed journals and conferences. 
+</p>
+
+<p>
+<a href="https://www.ida.liu.se/~auger33/"><b>August Ernstsson</b></a>, Tek.Lic., M.Sc. in computer engineering,
+is a final-year PhD student at
+Link&ouml;ping University and the main developer of SkePU since 2016. 
+He has published 5 articles about his work on SkePU in international peer-reviewed journals and conferences.
+He recently defended his Licentiate thesis about the SkePU 3 design.
+His main research interests are in high-level parallel programming interface design 
+targeting multi-core heterogeneous systems and clusters. 
+His recent work concerns how modern C++ can be leveraged and adapted to fit this purpose.
+</p>
+
+<p>
+<a href="https://www.ida.liu.se/department/contact/contactcard.en.shtml?johah30"><b>Johan Ahlqvist</b></a> 
+is a research engineer in the SkePU development team at Link&ouml;ping University.
+His research interests are in parallel computing, 
+advanced C++ and compiler technology.
+He has developed the cluster backend for SkePU 
+atop StarPU-MPI and the SkePU plug-in to the Mercurium
+compiler framework.
+</p>
+<p>
+</p>
+
+</section>
+				
+<!--
+<p id="logos">
+	<a href="http://ec.europa.eu/"><img src="img/logos/ec.jpg" alt="European Commission"/></a>
+	<a class="noborder" href="http://www.peppher.eu"><img src="img/logos/peppher.jpg" alt="PEPPHER"/></a>
+	<a href="http://www.excess-project.eu"><img src="img/logos/excess.png" alt="EXCESS"/></a>
+	<a href="https://exa2pro.eu"><img src="img/logos/exa2pro-logo.png" alt="EXA2PRO"/></a>
+	<a href="http://www.e-science.se"><img src="img/logos/serc.png" alt="SERC"/></a>
+	<a href="http://www.ida.liu.se/ext/cugs/"><img src="img/logos/cugs.jpg" alt="CUGS"/></a>
+	</p>
+-->
+</article>
+			
+<span class="menu">
+<a class="menu-item" href="https://skepu.github.io">SkePU</a> &middot;
+<a class="menu-item" href="#abstract">Tutorial Abstract</a> &middot;
+<a class="menu-item" href="#outline">Outline</a> &middot;
+<a class="menu-item" href="#prerequisite">Prerequisite Knowledge</a> &middot;
+<a class="menu-item" href="#requirements">Special Requirements</a> &middot;
+<a class="menu-item" href="#organizers">Organizers</a> &middot;
+<a class="menu-item" href="https://exa2pro.eu">EXA2PRO</a>
+</span>
+			
+</div>
+</body>
+</html>
