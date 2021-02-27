@@ -170,7 +170,22 @@ modern C++ and programming under Linux.
 <p>
   We encourage participants to install SkePU before the
   tutorial so we can make better use of the time.
-  Detailed instructions will follow. 
+	
+	<h3>Option 1: Use provided binary tutorial distribution</h3>
+	
+	<p>The source-to-source compilation tool is provided as a binary for x86-64 Linux systems. This is recommended for the tutorial, as it is quicker to get started.</p>
+	
+	<p><a href="https://www.ida.liu.se/labs/pelab/skepu/skepu3-ppopp21.tgz">Download the archive</a> (external link)</p>
+	
+	<p>To build a SkePU program, navigate to the examples subdirectory and run <b>make parallel/<em>map</em></b>, where <em>map</em> may be replaced by the file name of the target source file (without extension). The resulting program binary is located at <b>./parallel/<em>map</em></b>.</p>
+  
+	<h3>Option 2: Build from source</h3>
+	
+	<p>Clone the <a href="https://github.com/skepu/skepu/">SkePU GitHub repository</a> and follow the instructions in the <a href="../../docs/userguide_skepu.pdf">User Guide</a>.</p>
+		
+	<p>This will build the source-to-source compiler tool from the LLVM/Clang sources. This option is recommended for long-term SkePU development, but requires more disk space and compilation time (up to an hour depending on system).</p>
+	
+	<p>Follow the user guide for instructions how to build the example programs with Cmake.</p>
 </p>
 
 </section>
@@ -209,6 +224,83 @@ compiler framework.
 <p>
 </p>
 
+</section>
+
+
+
+<section>
+	
+	<h2>Exercises</h2>
+	
+	<h3>1. Modular addition</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>Implement the modular additions example from the lecture. Code snippets are provided in the slides, but you will have to integrate the snippets in a full program.</p>
+
+	<h3>2. Linear combination of vectors</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>a) Write a SkePU program that takes a Vector&lt;float&gt; v and a scalar a, and computes a Vector&lt;float&gt; that for each element index i contains v[i] * a. Consider the difference between element-wise containers and scalars as arguments to a SkePU skeleton.</p>
+
+	<p>b) Extend the program so that it instead takes two Vector&lt;float&gt; and two scalars a and b, and computes a Vector&lt;float&gt; that for each element index i contains v1[i] * a + v2[i] * b.  What changes need to be made?</p>
+
+	<p>c) (Advanced) To make this program handle a dynamic amount of vectors and scalars, they would have to be embedded within a Matrix&lt;float&gt; and a vector, respectively.  Write a new program that performs this computation.  There are several ways to approach this. Carefully consider how SkePU performs data parallelism on container elements in Map with matrices before you start.</p>
+	<p> Hint: Element index retrieval in the user function can be useful.</p>
+	<p>Hint: Using Map + Reduce in sequence can be worth considering.</p>
+
+	<h3>3. Complex multiplication</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>Implement a SkePU program that performs element-wise complex multiplication of two Vector&lt;MyComplex&gt;. You will have to define a struct MyComplex with real and imaginary float members.</p>
+	
+	<h3>4. Data generation</h3>
+	<p>Recommended skeletons: Map, MapReduce (b)</p>
+
+	<p>a) For a certain application, a Vector&lt;float&gt; needs to be pre-initialized with, for some float x, x raised to subsequent powers. So for each index i, the returned value shall be pow(x, i).</p>
+	
+	<p>Hint: Element index retrieval in the user function can be useful.</p>
+	<p>Hint: Remember the element-wise "arity" of a Map skeleton can be 0.</p>
+
+	<p>b) The application in question is Taylor series approximation.
+	Create a new program (base it on the solution in a) that computes a scalar value that is the approximation for log(1+x) for some float x.</p>
+
+	<p>Hint: You may want to use the MapReduce instance function setDefaultSize(size_t) for this.</p>
+	<p>Hint: It is possible to encode this in a single MapReduce call. The only input to the skeleton call will then be x.</p>
+
+	<h3>5. Minimum, maximum, average</h3>
+	<p>Recommended skeleton: Reduce</p>
+
+	<p>Create a SkePU program that, from a Vector&lt;float&gt;, computes the minimum, maximum, and average values. Is it possible to do this in one single Reduce call in SkePU?</p>
+	<p>Hint: Reduce relies on the associativity property of the user function.</p>
+
+	<h3>6. Average sum-of-rows</h3>
+	<p>Recommended skeleton: Reduce</p>
+
+	<p>Write a SkePU program that, from a Matrix&lt;float&gt;, computes the sum of each row and returns the average of those sums in the matrix.</p>
+	<p>Hint: Reduce has 2D reduce modes for this purpose.</p>
+		
+	<h3>7. Prefix count</h3>
+	<p>Recommended skeleton: Scan</p>
+
+	<p>Write a SkePU program, that, given a Vector&lt;float&gt;, returns a Vector<int> which in each element contains the count of non-zero elements up until that point.</p>
+
+	<h3>8. Rolling average</h3>
+	<p>Recommended skeleton: MapOverlap</p>
+
+	<p>a) Write a SkePU program that, given a Vector&lt;float&gt;, computes a Vector&lt;float&gt; containing the rolling averages (the average value of r elements up to and including the current one).</p>
+
+	<p>b) Extend your program so that more recent elements (closer) have a larger impact to the weighted average. The weights shall be (1 - distance/radius).</p>
+
+	<p>c) Make the weights dynamic by supplying them in a Vector&lt;float&gt; to the user function, as a random-access argument.</p>
+	<p>Hint: The size of the weight vector is the overlap radius + 1.</p>
+
+	<h3>9. Heat Propagation</h3>
+	<p>Recommended skeleton: MapOverlap</p>
+
+	<p>Create a SkePU program that performs iterative heat propagation in a rectangular, 2D grid. For each iteration, the new value for each element is assigned the average of the four neighbouring values.</p>
+	<p>Hint: You will want to place iteration in the main program, not in the user function.</p>
+	<p>Hint: You will need to double-buffer the grid. How can this be neatly done in the C++ interface of SkePU?</p>
+	
 </section>
 				
 <!--
