@@ -1,0 +1,287 @@
+---
+---
+<!doctype HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkePU Tutorial at 17th IEEE eScience, Sep. 21, 2021</title>
+<link rel="stylesheet" href="../../style.css"/>
+</head>
+<body>
+<div id="container">
+<span class="menu">
+<a class="menu-item" href="https://skepu.github.io">SkePU</a> &middot;
+<a class="menu-item" href="#slides">Slides</a> &middot;
+<a class="menu-item" href="#abstract">Tutorial Abstract</a> &middot;
+<a class="menu-item" href="#requirements">Special Requirements</a> &middot;
+<a class="menu-item" href="#organizers">Organizers</a> &middot;
+<a class="menu-item" href="https://escience2021.org/tutorials">IEEE eScience 2021</a>
+</span>
+			
+<article>
+	<div id="logo-container"><img id="logo" src="../../img/logos/skepu.png" alt="SkePU logo"/></div>
+ <p></p>
+ <p>
+<center>
+<h1>SkePU Tutorial at 
+<a href="https://escience2021.org/tutorials">17th IEEE eScience 2021</a>, 21 Sep. 2021</h1>
+</center>
+</p>
+<p>
+<center>
+<h4>Portable Programming of Heterogeneous Parallel Systems with SkePU</h4>
+</center>
+</p>
+<p>
+<center>
+	<b>Christoph Kessler, August Ernstsson</b><br>
+	Link&ouml;ping University, Link&ouml;ping, Sweden
+</center>
+</p>
+
+<section>
+	
+	<h2 id="slides">Presentation Slides</h2>
+	
+	<p><a href="./Kessler-eScience21-intro.pdf">Introduction slides</a>, presented by Christoph Kessler. (Last updated 2021-08-27)</p>
+	<p><a href="./Ernstsson-eScience-tutorial.pdf">Tutorial slides</a>, presented mainly by August Ernstson. (Last updated 2021-08-27)</p>
+	
+</section>
+
+
+<section>
+<h2 id="abstract">Tutorial Abstract</h2>
+
+<p>
+<a href="https://skepu.github.io">SkePU</a> is a C++ based open-source framework for high-level
+portable programming of heterogeneous parallel systems
+using <i>algorithmic skeletons</i>. 
+Skeletons are generic programming constructs 
+based on higher-order functions,
+such as <i>map</i>, <i>stencil</i>, <i>reduce</i>, <i>scan</i>, 
+that implement algorithmic patterns for which platform-specific parallel implementations may exist.
+Skeletons provide a high degree of abstraction and portability 
+with a quasi-sequential programming interface, as their implementations 
+encapsulate all low-level and platform-specific details 
+such as parallelization, synchronization, communication, memory management, 
+accelerator usage and other optimizations.
+</p>
+
+<p>
+From the same high-level source code using SkePU skeletons and
+data-containers, the framework generates target code for
+multicore CPU execution, CUDA and OpenCL code for execution
+on GPU and multi-GPU systems 
+(and other OpenCL devices such as Xeon-Phi), hybrid CPU-GPU
+execution, and on HPC clusters. 
+SkePU transparently performs a number of
+run-time optimizations, including data transfer minimization,
+data locality optimizations and 
+auto-tuned back-end selection. 
+</p>
+
+<p>
+The SkePU framework is organized
+as an include-only template library plus a light-weight
+pre-compiler based on LLVM clang; the cluster backend
+uses the MPI support in the StarPU runtime system.
+The development of SkePU started in 2010, and we recently
+presented the third generation of the framework.
+Beyond cooperative research projects such as 
+<a href="https://exa2pro.eu">H2020 EXA2PRO</a>, 
+we use SkePU since
+several years as a lab environment for teaching high-level
+parallel programming in our 
+<a href="https://www.ida.liu.se/~TDDD56">master-level course on multicore and GPU programming</a>
+at 
+<a href="https://www.liu.se">Link&ouml;ping University</a>, Sweden.
+</p>
+
+<p>
+In this tutorial we present SkePU with its skeletons and
+data-container types, guide participants through 
+some hands-on programming exercises in SkePU, 
+and also point out some
+of the more recently added new features 
+such as multi-variant user functions 
+(which can be used by platform expert programmers 
+to exploit 
+e.g. custom SIMD instructions without compromising
+the portability of the SkePU program).
+The source code of SkePU is available at
+<a href="https://skepu.github.io">skepu.github.io</a>;
+for fast installation 
+we also provide a binary
+distribution of SkePU for x86-64 Linux.
+</p>
+</section>
+				
+
+		
+<section>
+<h2 id="requirements">Special Requirements</h2>
+
+<p>
+  SkePU runs under Linux.
+  We encourage participants to bring their laptop for
+  hands-on programming in SkePU, and we try to help with
+  installation issues if there should be any.
+</p>
+
+<p>
+  We will also demo some examples on screen for all participants 
+  who prefer not to try it out immediately.
+</p>
+
+<p>
+  We encourage participants to install SkePU before the
+  tutorial so we can make better use of the time.
+	
+	<h3>Option 1: Use provided binary tutorial distribution</h3>
+	
+	<p>The source-to-source compilation tool is provided as a binary for x86-64 Linux systems. This is recommended for the tutorial, as it is quicker to get started.</p>
+	
+	<p><a href="https://www.ida.liu.se/labs/pelab/skepu/skepu3-ppopp21.tgz">Download the archive</a> (external link) <b>(To be updated with a later SkePU version for eScience!)</b></p>
+	
+	<p>To build a SkePU program, navigate to the examples subdirectory and run <b>make parallel/<em>map</em></b>, where <em>map</em> may be replaced by the file name of the target source file (without extension). The resulting program binary is located at <b>./parallel/<em>map</em></b>.</p>
+  
+	<h3>Option 2: Build from source</h3>
+	
+	<p>Clone the <a href="https://github.com/skepu/skepu/">SkePU GitHub repository</a> and follow the instructions in the <a href="../../docs/userguide_skepu.pdf">User Guide</a>.</p>
+		
+	<p>This will build the source-to-source compiler tool from the LLVM/Clang sources. This option is recommended for long-term SkePU development, but requires more disk space and compilation time (up to an hour depending on system).</p>
+	
+	<p>Follow the user guide for instructions how to build the example programs with Cmake.</p>
+</p>
+
+</section>
+				
+<section>
+<h2 id="organizers">About the Organizers</h2>
+					
+<p>
+<a href="http://www.ida.liu.se/~chrke"><b>Christoph Kessler</b></a> 
+is a professor for Computer Science at <a href="https://www.liu.se">Link&ouml;ping University</a>, Sweden,
+where he leads the Programming Environment Laboratory's research group on compiler technology and parallel computing.
+His research interests include parallel programming models, compiler technology, code generation, combinatorial optimization, and software composition/synthesis.
+He has <a href="http://www.ida.liu.se/~chrke/publ.html">published</a> two books, several book chapters and more than 120 scientific papers in international peer-reviewed journals and conferences. 
+</p>
+
+<p>
+<a href="https://www.ida.liu.se/~auger33/"><b>August Ernstsson</b></a>, Tek.Lic., M.Sc. in computer engineering,
+is a final-year PhD student at
+Link&ouml;ping University and the main developer of SkePU since 2016. 
+He has published 5 articles about his work on SkePU in international peer-reviewed journals and conferences.
+He recently defended his Licentiate thesis about the SkePU 3 design.
+His main research interests are in high-level parallel programming interface design 
+targeting multi-core heterogeneous systems and clusters. 
+His recent work concerns how modern C++ can be leveraged and adapted to fit this purpose.
+</p>
+<p>
+</p>
+
+</section>
+
+
+
+<section>
+	
+	<h2>Exercises</h2>
+	<p>For offline work; there is no scheudled exercise time during the tutorial.</p>
+	
+	<h3>1. Modular addition</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>Implement the modular additions example from the lecture. Code snippets are provided in the slides, but you will have to integrate the snippets in a full program.</p>
+
+	<h3>2. Linear combination of vectors</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>a) Write a SkePU program that takes a Vector&lt;float&gt; v and a scalar a, and computes a Vector&lt;float&gt; that for each element index i contains v[i] * a. Consider the difference between element-wise containers and scalars as arguments to a SkePU skeleton.</p>
+
+	<p>b) Extend the program so that it instead takes two Vector&lt;float&gt; and two scalars a and b, and computes a Vector&lt;float&gt; that for each element index i contains v1[i] * a + v2[i] * b.  What changes need to be made?</p>
+
+	<p>c) (Advanced) To make this program handle a dynamic amount of vectors and scalars, they would have to be embedded within a Matrix&lt;float&gt; and a vector, respectively.  Write a new program that performs this computation.  There are several ways to approach this. Carefully consider how SkePU performs data parallelism on container elements in Map with matrices before you start.</p>
+	<p> Hint: Element index retrieval in the user function can be useful.</p>
+	<p>Hint: Using Map + Reduce in sequence can be worth considering.</p>
+
+	<h3>3. Complex multiplication</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>Implement a SkePU program that performs element-wise complex multiplication of two Vector&lt;MyComplex&gt;. You will have to define a struct MyComplex with real and imaginary float members.</p>
+	
+	<h3>4. Data generation</h3>
+	<p>Recommended skeletons: Map, MapReduce (b)</p>
+
+	<p>a) For a certain application, a Vector&lt;float&gt; needs to be pre-initialized with, for some float x, x raised to subsequent powers. So for each index i, the returned value shall be pow(x, i).</p>
+	
+	<p>Hint: Element index retrieval in the user function can be useful.</p>
+	<p>Hint: Remember the element-wise "arity" of a Map skeleton can be 0.</p>
+
+	<p>b) The application in question is Taylor series approximation.
+	Create a new program (base it on the solution in a) that computes a scalar value that is the approximation for log(1+x) for some float x.</p>
+
+	<p>Hint: You may want to use the MapReduce instance function setDefaultSize(size_t) for this.</p>
+	<p>Hint: It is possible to encode this in a single MapReduce call. The only input to the skeleton call will then be x.</p>
+
+	<h3>5. Minimum, maximum, average</h3>
+	<p>Recommended skeleton: Reduce</p>
+
+	<p>Create a SkePU program that, from a Vector&lt;float&gt;, computes the minimum, maximum, and average values. Is it possible to do this in one single Reduce call in SkePU?</p>
+	<p>Hint: Reduce relies on the associativity property of the user function.</p>
+
+	<h3>6. Average sum-of-rows</h3>
+	<p>Recommended skeleton: Reduce</p>
+
+	<p>Write a SkePU program that, from a Matrix&lt;float&gt;, computes the sum of each row and returns the average of those sums in the matrix.</p>
+	<p>Hint: Reduce has 2D reduce modes for this purpose.</p>
+		
+	<h3>7. Prefix count</h3>
+	<p>Recommended skeleton: Scan</p>
+
+	<p>Write a SkePU program, that, given a Vector&lt;float&gt;, returns a Vector<int> which in each element contains the count of non-zero elements up until that point.</p>
+
+	<h3>8. Rolling average</h3>
+	<p>Recommended skeleton: MapOverlap</p>
+
+	<p>a) Write a SkePU program that, given a Vector&lt;float&gt;, computes a Vector&lt;float&gt; containing the rolling averages (the average value of r elements up to and including the current one).</p>
+
+	<p>b) Extend your program so that more recent elements (closer) have a larger impact to the weighted average. The weights shall be (1 - distance/radius).</p>
+
+	<p>c) Make the weights dynamic by supplying them in a Vector&lt;float&gt; to the user function, as a random-access argument.</p>
+	<p>Hint: The size of the weight vector is the overlap radius + 1.</p>
+
+	<h3>9. Heat Propagation</h3>
+	<p>Recommended skeleton: MapOverlap</p>
+
+	<p>Create a SkePU program that performs iterative heat propagation in a rectangular, 2D grid. For each iteration, the new value for each element is assigned the average of the four neighbouring values.</p>
+	<p>Hint: You will want to place iteration in the main program, not in the user function.</p>
+	<p>Hint: You will need to double-buffer the grid. How can this be neatly done in the C++ interface of SkePU?</p>
+	
+</section>
+				
+<!--
+<p id="logos">
+	<a href="http://ec.europa.eu/"><img src="img/logos/ec.jpg" alt="European Commission"/></a>
+	<a class="noborder" href="http://www.peppher.eu"><img src="img/logos/peppher.jpg" alt="PEPPHER"/></a>
+	<a href="http://www.excess-project.eu"><img src="img/logos/excess.png" alt="EXCESS"/></a>
+	<a href="https://exa2pro.eu"><img src="img/logos/exa2pro-logo.png" alt="EXA2PRO"/></a>
+	<a href="http://www.e-science.se"><img src="img/logos/serc.png" alt="SERC"/></a>
+	<a href="http://www.ida.liu.se/ext/cugs/"><img src="img/logos/cugs.jpg" alt="CUGS"/></a>
+	</p>
+-->
+</article>
+			
+<span class="menu">
+<a class="menu-item" href="https://skepu.github.io">SkePU</a> &middot;
+<a class="menu-item" href="#slides">Slides</a> &middot;
+<a class="menu-item" href="#abstract">Tutorial Abstract</a> &middot;
+<a class="menu-item" href="#requirements">Special Requirements</a> &middot;
+<a class="menu-item" href="#organizers">Organizers</a> &middot;
+<a class="menu-item" href="https://escience2021.org/tutorials">IEEE eScience 2021</a>
+</span>
+			
+</div>
+</body>
+</html>
