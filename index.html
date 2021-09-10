@@ -19,18 +19,16 @@
 				<a class="menu-item" href="#applications">Applications</a> &middot;
 				<a class="menu-item" href="#publications">Publications</a> &middot;
 				<a class="menu-item" href="#contact">Contact</a> &middot;
-				<a class="menu-item" href="#acknowledgements">Acknowledgements</a> &middot;
-				<a class="menu-item" style="color: silver !important;" href="https://www.ida.liu.se/labs/pelab/skepu/skepu1/">SkePU 1</a>
+				<a class="menu-item" href="#acknowledgements">Acknowledgements</a>
 			</span>
 			
 			<article>
 				<div id="logo-container"><img id="logo" src="img/logos/skepu.png" alt="SkePU logo"/></div>
 				
-				<p id="tagline">Autotunable Multi-Backend Skeleton Programming Framework for Multicore CPU and Multi-GPU Systems</p>
+				<p id="tagline">Portable Autotunable Skeleton Programming Framework<br>for Multicore CPU and Multi-GPU Systems and Clusters</p>
 				
 				<p id="news">
-					<em>New:</em> Preview release of SkePU 3, with new skeletons, new containers, and new MPI backend!<br/>
-					<em>New:</em> SkePU is now hosted on <a href="https://github.com/skepu/skepu/">GitHub</a>!
+					<em>New:</em> Release of <a href="#downloads">SkePU 3.1</a>, with the SkePU "standard library".
 				</p>
 				
 				<section>
@@ -61,19 +59,35 @@ It is a C++ template library with (in its current version) eight data-parallel s
 					
 					<p>Depending on a skeleton call's execution context properties (usually, operand size), different backends (skeleton implementations) for different execution unit types will be more efficient than others. SkePU provides a tuning framework that allows it to automatically select the expected fastest implementation variant at each skeleton call.</p>
 					
-					<h4 id="containers">Smart containers (Vector, Matrix, Tensor)</h4>
+					<h4 id="containers">Smart data-containers (Vector, Matrix, Tensor)</h4>
 					
-					<p>For passing operands to skeleton calls: Smart containers are runtime data structures wrapping operand data that control software caching of operand elements by automatically keeping track of the valid copies of their element data and their memory locations. Smart containers can, at runtime, automatically optimize communication, perform memory management, and synchronize asynchronous skeleton calls driven by operand data flow.</p>
+					<p>For passing operands to skeleton calls: Smart data-containers are runtime data structures wrapping operand data that control software caching of operand elements by automatically keeping track of the valid copies of their element data and their memory locations. Smart data-containers can, at runtime, automatically optimize communication, perform memory management, and synchronize asynchronous skeleton calls driven by operand data flow.</p>
 					
-					<p>Smart containers come in the shapes of 1D vectors, 2D matrices, 3D tensors, and 4D tensors.</p>
+					<p>Smart data-containers come in the shapes of 1D vectors, 2D matrices, 3D tensors, and 4D tensors.</p>
 					
-					<h3 id="changes">Changes</h3>
-					
-					<p>SkePU 2 is a rewrite of SkePU, with a new user interface based on modern C++ syntax, such as <em>lambda expressions</em>; a new compilation model with a <em>source-to-source</em> translator using <em>Clang</em> libraries; a revised implementation and runtime built around variadic templates; and the same efficient parallel skeleton algorithms as before. The design of SkePU 2 emphasizes <em>flexibility</em> and <em>type-safety</em>, areas in which earlier work on SkePU 1.x had identified opportunities for improvement.</p>
-					
-					<p>SkePU 2 removes the MapArray and Generate skeletons in favor of a generalized <a href="#map">Map</a> and adds the <a href="#call">Call</a> skeleton. It is not backwards-compatible with programs written for SkePU 1.x. However, translating existing source-code is straightforward as each skeleton in SkePU 1.x has a direct—or simpler—equivalent in SkePU 2 and later.</p>
-					
-					<p>SkePU 3 builds on the modern foundation of SkePU 2 and adds <em>new skeletons, new smart containers, an MPI backend</em> for cluster execution and improves the interface and semantics of SkePU applications. It is not backwards-compatible with SkePU 2 programs, but the changes are of limited scope and old applications can be adapted with little effort.</p>
+					<h4>Freely accessible containers inside user functions</h4>
+
+<p>SkePU smart data-containers are typically made available element-wise in user functions. For more complex data access patterns, there can be a need to access multiple elements from a single smart container. SkePU solves this use-case by the <em>proxy containers</em>: Vec, Mat, Ten3, and Ten4. Examples of such use-cases are stencil weights in an image filter, or iterating through a matrix row in a matrix-vector multiplication.</p>
+
+<p>In addition to whole-container proxy objects, there are three instances of proxies for partial container access: MatRow<T> and  MatCol<T> for matrices, and RegionND<T> representing the neighborhood around a specific element for each of the four types of smart data-containers.</p>
+
+
+
+<pre class="example">template<span style='color:#808030; '>&lt;</span>typename T<span style='color:#808030; '>></span>
+T mvmult_f<span style='color:#808030; '>(</span>skepu<span style='color:#800080; '>::</span>Index1D row<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>const</span> skepu<span style='color:#800080; '>::</span>Mat<span style='color:#808030; '>&lt;</span>T<span style='color:#808030; '>></span> m<span style='color:#808030; '>,</span> <span style='color:#800000; font-weight:bold; '>const</span> skepu<span style='color:#800080; '>::</span>Vec<span style='color:#808030; '>&lt;</span>T<span style='color:#808030; '>></span> v<span style='color:#808030; '>)</span>
+<span style='color:#800080; '>{</span>
+	T res <span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#800080; '>;</span>
+	<span style='color:#800000; font-weight:bold; '>for</span> <span style='color:#808030; '>(</span><span style='color:#603000; '>size_t</span> j <span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#800080; '>;</span> j <span style='color:#808030; '>&lt;</span> v<span style='color:#808030; '>.</span>size<span style='color:#800080; '>;</span> <span style='color:#808030; '>+</span><span style='color:#808030; '>+</span>j<span style='color:#808030; '>)</span>
+		res <span style='color:#808030; '>+</span><span style='color:#808030; '>=</span> m<span style='color:#808030; '>(</span>row<span style='color:#808030; '>.</span>i<span style='color:#808030; '>,</span> j<span style='color:#808030; '>)</span> <span style='color:#808030; '>*</span> v<span style='color:#808030; '>(</span>j<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+	<span style='color:#800000; font-weight:bold; '>return</span> res<span style='color:#800080; '>;</span>
+<span style='color:#800080; '>}</span>
+
+skepu<span style='color:#800080; '>::</span>Vector<span style='color:#808030; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#808030; '>></span> y<span style='color:#808030; '>(</span>height<span style='color:#808030; '>)</span><span style='color:#808030; '>,</span> x<span style='color:#808030; '>(</span>width<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+skepu<span style='color:#800080; '>::</span>Matrix<span style='color:#808030; '>&lt;</span><span style='color:#800000; font-weight:bold; '>float</span><span style='color:#808030; '>></span> A<span style='color:#808030; '>(</span>height<span style='color:#808030; '>,</span> width<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+<span style='color:#800000; font-weight:bold; '>auto</span> mvmult <span style='color:#808030; '>=</span> skepu<span style='color:#800080; '>::</span>Map<span style='color:#808030; '>(</span>mvmult_f<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+mvmult<span style='color:#808030; '>(</span>y<span style='color:#808030; '>,</span> A<span style='color:#808030; '>,</span> x<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+
+</pre>
 					
 				</section>
 				
@@ -160,23 +174,31 @@ It is a C++ template library with (in its current version) eight data-parallel s
 				<section>
 					<h2 id="applications">Applications</h2>
 
-					<p>Several <em>test applications</em> have been developed using the SkePU skeletons, including:</p>
+					<p>Several <em>test applications</em> have been developed using the SkePU skeletons, including the following:</p>
 					<ul>
-						<li><a href="https://en.wikipedia.org/wiki/Taylor_series">Taylor</a> approximation,</li>
-						<li>a <a href="https://en.wikipedia.org/wiki/Runge–Kutta_methods">Runge-Kutta</a> ODE solver,
+						<li><a href="https://en.wikipedia.org/wiki/Taylor_series">Taylor</a> approximation</li>
+						<li>a <a href="https://en.wikipedia.org/wiki/Runge–Kutta_methods">Runge-Kutta</a> ODE solver
 						<li>separable and non-separable 2D image <a href="https://en.wikipedia.org/wiki/Convolution">convolution</a> filters,
 						<li><a href="https://en.wikipedia.org/wiki/Successive_over-relaxation">Successive Over-Relaxation</a> (SOR),
-						<li><a href="https://en.wikipedia.org/wiki/Coulomb%27s_law">Coulombic</a> potential grid application,
-						<li><a href="https://en.wikipedia.org/wiki/N-body_simulation">N-body simulation</a>,
-						<li><a href="https://en.wikipedia.org/wiki/LU_decomposition">LU decomposition</a>,
-						<li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot</a> fractals,
+						<li><a href="https://en.wikipedia.org/wiki/Coulomb%27s_law">Coulombic</a> potential grid application
+						<li><a href="https://en.wikipedia.org/wiki/N-body_simulation">N-body simulation</a>
+						<li><a href="https://en.wikipedia.org/wiki/LU_decomposition">LU decomposition</a>
+						<li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot</a> fractals
 						<li><a href="https://en.wikipedia.org/wiki/Smoothed-particle_hydrodynamics">Smooth Particle Hydrodynamics</a> (SPH, fluid dynamics shocktube simulation),
 						<li><a href="https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient">Pearson Product-Moment Correlation Coefficient</a> (PPMCC),
-						<li><a href="https://en.wikipedia.org/wiki/Mean_squared_error">Mean Squared Error</a> (MSE), and
-						<li><a href="https://en.wikipedia.org/wiki/Median_filter">median filtering</a>.
+						<li><a href="https://en.wikipedia.org/wiki/Mean_squared_error">Mean Squared Error</a> (MSE)
+						<li><a href="https://en.wikipedia.org/wiki/Median_filter">Median filtering</a>
+						<li>Streamcluster (from <a href="https://parsec.cs.princeton.edu">PARSEC</a>)</li>
+						<li><a href="https://en.wikipedia.org/wiki/Black–Scholes_model">Black-Scholes financial dynamics</a> (from <a href="https://parsec.cs.princeton.edu">PARSEC</a>)</li>
+						<li><a href="https://en.wikipedia.org/wiki/Conjugate_gradient_method">Conjugate gradient solver</a></li>
+						<li><a href="https://en.wikipedia.org/wiki/Miller–Rabin_primality_test">Miller-Rabin primality test</a></li>
+						<li>Monte-Carlo π calculation</li>
+						<li>Lattice-quantum chromodynamics simulation</li>
+						<li>Jacobi heat diffusion</li>
+						<li>Molecular dynamics for electrochemistry simulation</li>
 					</ul>
 					
-					<p>The source code for some of these is included in the SkePU distribution.</p>
+					<p>The <a href="https://github.com/skepu/skepu/blob/master/examples/">source code</a> for some of these is included in the SkePU distribution.</p>
 				</section>
 				
 				<section>
@@ -192,11 +214,12 @@ It is a C++ template library with (in its current version) eight data-parallel s
 						<a href="#p2017">2017</a> -
 						<a href="#p2018">2018</a> -
 						<a href="#p2019">2019</a> -
-						<a href="#p2020">2020</a>
+						<a href="#p2020">2020</a> -
+						<a href="#p2021">2021</a>
 					</p>
 					
 					<span class="buttons">
-							<span class="button get" id="userguide"><img class="thumb" alt="user guide" src="img/userguide_skepu_titlepage.png"/><br/><a href="docs/userguide_skepu.pdf">User Guide<br>(2020)</a></span>
+							<span class="button get" id="userguide"><img class="thumb" alt="user guide" src="img/userguide_skepu_titlepage.png"/><br/><a href="docs/userguide_skepu.pdf">User Guide<br>(2021)</a></span>
 							<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/lic-seminar-cover.png"/><br/><a href="docs/lic-seminar.pdf">Licentiate<br/>Seminar</a></span>
 							<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/tutorial-titlepage.png"/><br/><a href="docs/MCC2019-SkePU-Tutorial.pdf">Tutorial<br>(2019)</a></span>
 					</span>
@@ -333,6 +356,23 @@ author version: <a href="http://www.ida.liu.se/labs/pelab/skepu/skepu1/publicati
 						<li>August Ernstsson:<br>
 						<b>Designing a Modern Skeleton Programming Framework for Parallel and Heterogeneous Systems.</b><br>Link&ouml;ping Studies in Science and Technology, Licentiate Thesis No. 1886, Link&ouml;ping University, October 2020. (<a href="http://urn.kb.se/resolve?urn=urn:nbn:se:liu:diva-170194">LiU-EP</a>)</li>
 					</ul>
+					
+					<h3 id="p2021">2021</h3>
+					<ul>
+						<li>August Ernstsson, Johan Ahlqvist, Stavroula Zouzoula, Christoph Kessler<br>
+							<a href="https://doi.org/10.1007/s10766-021-00704-3">
+								<b>SkePU 3: Portable High-Level Programming of Heterogeneous Systems and HPC Clusters.</b>
+							</a><br>
+						Int J Parallel Prog (2021).
+						</li>
+						
+						<li>Lazaros Papadopoulos, Dimitrios Soudris, Christoph Kessler, August Ernstsson, Johan Ahlqvist, Nikos Vasilas, Athanasios I. Papadopoulos, Panos Seferlis, Charles Prouveur, Matthieu Haefele, Samuel Thibault, Athanasios Salamanis, Theodoros Ioakimidis, Dionysios Kehagias<br>
+							<a href="https://doi.org/10.1109/TPDS.2021.3104257">
+								<b>EXA2PRO: A Framework for High Development Productivity on Heterogeneous Computing Systems.</b>
+							</a><br>
+						IEEE Transactions on Parallel and Distributed Systems, 2021.
+						</li>
+					</ul>
 
 					
 					<h2 id="work">Ongoing work</h2>
@@ -348,7 +388,6 @@ author version: <a href="http://www.ida.liu.se/labs/pelab/skepu/skepu1/publicati
 					<ul>
 						<li><a href="https://liu.se/en/employee/auger33">August Ernstsson</a></li>
 						<li><a href="http://www.ida.liu.se/~chrke/">Prof. Christoph Kessler</a></li>
-						<li><a href="https://liu.se/en/employee/johah30">Johan Ahlqvist</a></li>
 					</ul>
 					<p>For reporting feature suggestions, bug reports, and other comments: please email to "&lt;firstname&gt; DOT &lt;lastname&gt; AT liu DOT se".</p>
 				</section>
@@ -364,9 +403,15 @@ by <a href="http://www.e-science.se">SeRC</a> project OpCoReS,
 by <a href="http://www.ida.liu.se/ext/cugs/">CUGS</a>,
 and by Link&ouml;ping University, Sweden.</p>
 <p>Previous major contributors to SkePU include <em>Johan Enmyren</em> and <em>Usman Dastgeer</em>. The multivector container for MapArray (note: obsolete in SkePU 2), and the SkePU 1.2 user guide have been added by <em>Oskar Sj&ouml;str&ouml;m</em>.</p>
-<p>Streaming support for CUDA in SkePU 1.2 has been contributed by <em>Claudio Parisi</em> from University of Pisa, Italy, in a recent cooperation with the FastFlow project.</p>
+<p>Streaming support for CUDA in SkePU 1.2 has been contributed by <em>Claudio Parisi</em> from University of Pisa, Italy, in a cooperation with the FastFlow project.</p>
 <p>SkePU example programs in the public distribution have been contributed by Johan Enmyren, Usman Dastgeer, <em>Mudassar Majeed</em> and <em>Lukas Gillsj&ouml;</em>.</p>
 <p>Experimental implementations of SkePU for other target platforms (not part of the public distribution) have been contributed e.g. by Mudassar Majeed, <em>Rosandra Cuello</em> and <em>Sebastian Thorarensen</em>.</p>
+<p>The cluster backend of SkePU 3 and later has been contributed by <b>Henrik Henriksson</b> and <b>Johan Ahlqvist</b>. Johan also contributed in several other aspects of SkePU development, including the CMake build system.</p>
+
+<p>Special thanks to the project partners of EXA2PRO who helped shape the design and feature set of SkePU 3.</p>
+
+<p>We also thank the <b>National Supercomputing
+Centre</b> (NSC) and SNIC for access to their HPC computing resources (SNIC 2016/5-6, SNIC 2020/13-113, LiU-gpu-2021-1).</p>
 </section>
 				
 				<p id="logos">
@@ -391,8 +436,7 @@ and by Link&ouml;ping University, Sweden.</p>
 				<a class="menu-item" href="#applications">Applications</a> &middot;
 				<a class="menu-item" href="#publications">Publications</a> &middot;
 				<a class="menu-item" href="#contact">Contact</a> &middot;
-				<a class="menu-item" href="#acknowledgements">Acknowledgements</a> &middot;
-				<a class="menu-item" style="color: silver !important;" href="skepu1/">SkePU 1</a>
+				<a class="menu-item" href="#acknowledgements">Acknowledgements</a>
 			</span>
 			
 		</div>
