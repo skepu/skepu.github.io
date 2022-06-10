@@ -1,0 +1,177 @@
+---
+---
+<!doctype HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkePU Tutorial at ACM PPoPP'21 Conference, Feb. 27, 2021</title>
+<link rel="stylesheet" href="../../style.css"/>
+</head>
+<body>
+<div id="container">
+<span class="menu">
+<a class="menu-item" href="https://skepu.github.io">SkePU</a> &middot;
+<a class="menu-item" href="#abstract">Tutorial Abstract</a> &middot;
+<a class="menu-item" href="#outline">Outline</a> &middot;
+<a class="menu-item" href="#prerequisite">Prerequisite Knowledge</a> &middot;
+<a class="menu-item" href="#requirements">Special Requirements</a> &middot;
+<a class="menu-item" href="#organizers">Organizers</a> &middot;
+<a class="menu-item" href="https://ppopp21.sigplan.org/track/PPoPP-2021-workshops-and-tutorials#Accepted-Workshops-and-Tutorials">PPoPP'21</a>
+</span>
+			
+<article>
+	<div id="logo-container"><img id="logo" src="../../img/logos/skepu.png" alt="SkePU logo"/></div>
+<!--
+<p id="tagline">SkePU Tutorial at 
+ACM PPoPP'21 Conference, 27 Feb. 2021</p>
+ -->
+ 
+<div id="content">
+	
+<h1>SkePU take-home assignment</h1>
+				
+<section>
+	
+	<p><a href="SkePU-tutorial.pdf">Slides from the tutorial</a></p>
+
+	<h2>Bloom filter</h2>
+	
+	<p>You are given a SkePU program that uses 1D MapOverlap to compute a gaussian blur filter on matrices. The program can be used with standard color-PNG image files thanks to integration with <a href="https://github.com/lvandeve/lodepng">lodepng</a>, a portable PNG parser for C++ with a permissive open-source license. The given program includes a separability optimization for 2D filters, applying a sequence of two 1D filters on a 2D data set.</p>
+	
+	<h3>Main exercises</h3>
+	
+	<ol>
+		<li>Install SkePU by following the steps in the tutorial and the User Guide.</li>
+		
+		<li>Download the <a href="assignment.zip">assignment files</a> and unpack them in a directory other than the examples directory of the SkePU sources. The assignment files include a simplified copy of the Makefile from the examples directory, where you will need to change two lines. Enable only the backends supported by your system and point the source variable to the <code>skepu</code> directory of your SkePU installation.
+			
+		<pre>
+# Default backend set for SkePU precompiler.
+BACKENDS = -openmp -opencl -cuda
+
+# Location of the SkePU repository
+SKEPU_SRC = $(PWD)/../
+</pre>
+
+		<li>Compile (<code>make parallel/bloom</code>) and run the given program (e.g. <code>./parallel/bloom infile.png outfile.png 10</code>) in the unpacked assignment directory.</li>
+		
+		<li>Make sure you understand the <code>main</code> function in the given program, especially the skeleton declarations and their associated user functions (declared above main).</li>
+		
+		<li>Modify the program such that, after loading the image from file but before doing any filtering, it computes the <em>average intensity</em> of all the pixels in the image. Print the average intensity to standard output.<br/>
+			<em>Hint 1: This is a map-reduce operation. Computing the intensity of each pixels is a mapping step, while computing the average intensity needs a reduction step.</em></br>
+			<em>Hint 2: The color channels are stored as <code>char</code>s, which have very limited range. You might need extended range for the average computation.</em>
+		</li>
+		
+		<li>Modify the MapOverlap user function so that the average intensity value is available to the filtering code. When iterating through input pixels, change the filtering code so that only contributions from input pixels which are brighter than the average contribute to the blur operation. This will give an approximate bloom-like effect.</li>
+	</ol>
+	
+	<p>You can use the images below for testing.</p>
+	<p style="text-align: center;"><img src="blossom.png" width="400"/> <img src="jelly.png" width="200"/></p>
+	
+	<h3>Optional exercises</h3>
+	
+	<ul>
+		<li>Modify the program (blur and/or bloom filter) to use 2D MapOverlap instead of the separability optimization. You will need to change code both in <code>main</code> and in the user function. Compare the outputs (separated 1D vs. 2D). A gaussian blur filter is mathematically separable and the outputs should look identical (save for numerical inaccuracies). Is the bloom filter separable with preserved result?</li>
+		<li>Modify the code to do any image filtering operation you like. For example, Sobel edge detection gives a neat effect and fits the SkePU API well.</li>
+	</ul>
+	
+	<h2>Additional exercises</h2>
+	
+	<h3>1. Modular addition</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>Implement the modular additions example from the lecture. Code snippets are provided in the slides, but you will have to integrate the snippets in a full program.</p>
+
+	<h3>2. Linear combination of vectors</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>a) Write a SkePU program that takes a Vector&lt;float&gt; v and a scalar a, and computes a Vector&lt;float&gt; that for each element index i contains v[i] * a. Consider the difference between element-wise containers and scalars as arguments to a SkePU skeleton.</p>
+
+	<p>b) Extend the program so that it instead takes two Vector&lt;float&gt; and two scalars a and b, and computes a Vector&lt;float&gt; that for each element index i contains v1[i] * a + v2[i] * b.  What changes need to be made?</p>
+
+	<p>c) (Advanced) To make this program handle a dynamic amount of vectors and scalars, they would have to be embedded within a Matrix&lt;float&gt; and a vector, respectively.  Write a new program that performs this computation.  There are several ways to approach this. Carefully consider how SkePU performs data parallelism on container elements in Map with matrices before you start.</p>
+	<p> Hint: Element index retrieval in the user function can be useful.</p>
+	<p>Hint: Using Map + Reduce in sequence can be worth considering.</p>
+
+	<h3>3. Complex multiplication</h3>
+	<p>Recommended skeletons: Map</p>
+
+	<p>Implement a SkePU program that performs element-wise complex multiplication of two Vector&lt;MyComplex&gt;. You will have to define a struct MyComplex with real and imaginary float members.</p>
+	
+	<h3>4. Data generation</h3>
+	<p>Recommended skeletons: Map, MapReduce (b)</p>
+
+	<p>a) For a certain application, a Vector&lt;float&gt; needs to be pre-initialized with, for some float x, x raised to subsequent powers. So for each index i, the returned value shall be pow(x, i).</p>
+	
+	<p>Hint: Element index retrieval in the user function can be useful.</p>
+	<p>Hint: Remember the element-wise "arity" of a Map skeleton can be 0.</p>
+
+	<p>b) The application in question is Taylor series approximation.
+	Create a new program (base it on the solution in a) that computes a scalar value that is the approximation for log(1+x) for some float x.</p>
+
+	<p>Hint: You may want to use the MapReduce instance function setDefaultSize(size_t) for this.</p>
+	<p>Hint: It is possible to encode this in a single MapReduce call. The only input to the skeleton call will then be x.</p>
+
+	<h3>5. Minimum, maximum, average</h3>
+	<p>Recommended skeleton: Reduce</p>
+
+	<p>Create a SkePU program that, from a Vector&lt;float&gt;, computes the minimum, maximum, and average values. Is it possible to do this in one single Reduce call in SkePU?</p>
+	<p>Hint: Reduce relies on the associativity property of the user function.</p>
+
+	<h3>6. Average sum-of-rows</h3>
+	<p>Recommended skeleton: Reduce</p>
+
+	<p>Write a SkePU program that, from a Matrix&lt;float&gt;, computes the sum of each row and returns the average of those sums in the matrix.</p>
+	<p>Hint: Reduce has 2D reduce modes for this purpose.</p>
+		
+	<h3>7. Prefix count</h3>
+	<p>Recommended skeleton: Scan</p>
+
+	<p>Write a SkePU program, that, given a Vector&lt;float&gt;, returns a Vector<int> which in each element contains the count of non-zero elements up until that point.</p>
+
+	<h3>8. Rolling average</h3>
+	<p>Recommended skeleton: MapOverlap</p>
+
+	<p>a) Write a SkePU program that, given a Vector&lt;float&gt;, computes a Vector&lt;float&gt; containing the rolling averages (the average value of r elements up to and including the current one).</p>
+
+	<p>b) Extend your program so that more recent elements (closer) have a larger impact to the weighted average. The weights shall be (1 - distance/radius).</p>
+
+	<p>c) Make the weights dynamic by supplying them in a Vector&lt;float&gt; to the user function, as a random-access argument.</p>
+	<p>Hint: The size of the weight vector is the overlap radius + 1.</p>
+
+	<h3>9. Heat Propagation</h3>
+	<p>Recommended skeleton: MapOverlap</p>
+
+	<p>Create a SkePU program that performs iterative heat propagation in a rectangular, 2D grid. For each iteration, the new value for each element is assigned the average of the four neighbouring values.</p>
+	<p>Hint: You will want to place iteration in the main program, not in the user function.</p>
+	<p>Hint: You will need to double-buffer the grid. How can this be neatly done in the C++ interface of SkePU?</p>
+	
+</section>
+				
+<!--
+<p id="logos">
+	<a href="http://ec.europa.eu/"><img src="img/logos/ec.jpg" alt="European Commission"/></a>
+	<a class="noborder" href="http://www.peppher.eu"><img src="img/logos/peppher.jpg" alt="PEPPHER"/></a>
+	<a href="http://www.excess-project.eu"><img src="img/logos/excess.png" alt="EXCESS"/></a>
+	<a href="https://exa2pro.eu"><img src="img/logos/exa2pro-logo.png" alt="EXA2PRO"/></a>
+	<a href="http://www.e-science.se"><img src="img/logos/serc.png" alt="SERC"/></a>
+	<a href="http://www.ida.liu.se/ext/cugs/"><img src="img/logos/cugs.jpg" alt="CUGS"/></a>
+	</p>
+-->
+</article>
+</div>
+			
+<span class="menu">
+<a class="menu-item" href="https://skepu.github.io">SkePU</a> &middot;
+<a class="menu-item" href="#abstract">Tutorial Abstract</a> &middot;
+<a class="menu-item" href="#outline">Outline</a> &middot;
+<a class="menu-item" href="#prerequisite">Prerequisite Knowledge</a> &middot;
+<a class="menu-item" href="#requirements">Special Requirements</a> &middot;
+<a class="menu-item" href="#organizers">Organizers</a> &middot;
+<a class="menu-item" href="https://ppopp21.sigplan.org/track/PPoPP-2021-workshops-and-tutorials#Accepted-Workshops-and-Tutorials">PPoPP'21</a>
+</span>
+			
+</div>
+</body>
+</html>
