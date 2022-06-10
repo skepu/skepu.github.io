@@ -171,7 +171,7 @@ pre.example
 	padding: 1.5em 8%;
 }
 
-li {font-size: 0.8em;}
+li {font-size: 1em;}
 
 p#logos
 {
@@ -224,4 +224,14 @@ p#logos a.noborder
 	{
 		padding: 1.5em 3%;
 	}
+}
+
+h1 {
+	font-size: 2.5em;
+	margin: 1em 8%;
+	text-align: center;
+}
+
+ol {
+	margin: 0 8%;
 }
