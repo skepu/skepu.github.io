@@ -45,16 +45,19 @@ It is a C++ template library with (in its current version) eight data-parallel s
 						<li><a href="#reduce">Reduce</a>: Reduction with 1D, 2D, 3D, 4D variations.</li>
 						<li><a href="#mapreduce">MapReduce</a>: Efficient chaining of Map and Reduce.</li>
 						<li><a href="#mapoverlap">MapOverlap</a>: Stencil operation in 1D, 2D, 3D, and 4D.</li>
-            <li><a href="#mappool">MapPool</a>: Partial block-wise reduction (pooling operator) in 1D, 2D, 3D, and 4D.</li>
-						<li><a href="#scan">Scan</a>: Generalized prefix sum.</li>
+            <li><a href="#mappool">MapPool</a>: Partial block-wise reduction (pooling) in 1D, 2D, 3D, and 4D.</li>
+						<li><a href="#scan">Scan</a>: Generalized prefix sums computation.</li>
 						<li><a href="#mappairs">MapPairs</a>: Cartesian product-style computation.</li>
 						<li><a href="#mappairsreduce">MapPairsReduce</a>: Efficient chaining of MapPairs and Reduce.</li>
 						<li>(deprecated: <a href="#call">Call</a>: Generic multi-variant component - replaced by skepu::external)</li>
+            
 					</ul>
-					
+					<p>Unless explicitly stated otherwise, these skeletons are <b>fully polymorphic</b> in both: the <b>per-element operator</b> (user function), the <b>operand shape</b> (data-container dimensionality), the <b>operand access pattern</b>, the <b>operand number</b> (arity) for input and output operands, and the <b>element data type</b>.
+          </p>
+          
 					<h4>Multiple back-ends and multi-GPU support</h4>
 					
-					<p>Each skeleton has several different backends (implementations): for sequential C, OpenMP, OpenCL, CUDA, and multi-GPU OpenCL and CUDA. There is also a new back-end based on MPI and StarPU for execution on a cluster available, which supports some of the skeletons.</p>
+					<p>Each skeleton has several different backends (implementations): for sequential C, OpenMP, OpenCL, CUDA, and multi-GPU OpenCL and CUDA. There also exists a (now, elder) variant of SkePU 3 for cluster-parallel execution based on MPI and StarPU, which supports some of the skeletons.</p>
 					
 					<h4>Tunable context-aware implementation selection</h4>
 					
@@ -62,15 +65,15 @@ It is a C++ template library with (in its current version) eight data-parallel s
 					
 					<h4 id="containers">Smart data-containers (Vector, Matrix, Tensor)</h4>
 					
-					<p>For passing operands to skeleton calls: Smart data-containers are runtime data structures wrapping operand data that control software caching of operand elements by automatically keeping track of the valid copies of their element data and their memory locations. Smart data-containers can, at runtime, automatically optimize communication, perform memory management, and synchronize asynchronous skeleton calls driven by operand data flow.</p>
+					<p>For passing operands to skeleton calls: SkePU smart data-containers are runtime data structures wrapping and managing arrays used as skeleton call operands. They transparently perform coherent software caching of operand elements in device memories by automatically keeping track of the valid copies of their element data and their memory locations. Smart data-containers can, at runtime, automatically optimize communication, perform memory management, and synchronize asynchronous skeleton calls driven by operand data flow.</p>
 					
-					<p>Smart data-containers come in the shapes of 1D vectors, 2D matrices, 3D tensors, and 4D tensors.</p>
+					<p>Smart data-containers are available as generic data types for 1D vectors, 2D matrices, 3D tensors, and 4D tensors.</p>
 					
-					<h4>Freely accessible containers inside user functions</h4>
+					<h4>Access control for container elements inside user functions</h4>
 
 <p>SkePU smart data-containers are typically made available element-wise in user functions. For more complex data access patterns, there can be a need to access multiple elements from a single smart container. SkePU solves this use-case by the <em>proxy containers</em>: Vec, Mat, Ten3, Ten4. </p>
 
-<p>In addition to whole-container proxy objects, there are further types of generic proxies for <i>partial</i> container access: MatRow<T> and  MatCol<T> for matrices (e.g. for iterating through a matrix row in a matrix-vector multiplication), Region1D<T>...Region4D<T> representing the neighborhood around a specific element for each of the four types of smart data-containers (e.g. for stencil weights in an image filter), and Pool1D<T>...Pool4D<T> (block regions for pooling operators).</p>
+<p>In addition to whole-container proxy objects, there are further types of generic proxies for <i>partial</i> container access: <pre>MatRow<T></pre> and  <pre>MatCol<T></pre> for matrices (e.g. for iterating through a matrix row in a matrix-vector multiplication), Region1D<T>...Region4D<T> representing the neighborhood around a specific element for each of the four types of smart data-containers (e.g. for stencil weights in an image filter), and Pool1D<T>...Pool4D<T> (block regions for pooling operators).</p>
 
 
 <pre class="example">template<span style='color:#808030; '>&lt;</span>typename T<span style='color:#808030; '>></span>
@@ -156,7 +159,7 @@ mvmult<span style='color:#808030; '>(</span>y<span style='color:#808030; '>,</sp
 					
 					{% include_relative codesamples/mapoverlap.html %}
 
-          <h3 id="mapoverlap">MapPool</h3>
+          <h3 id="mappool">MapPool</h3>
 					
 					<p>MapPool represents a generic block-wise reduction operation applied on 1D, 2D, 3D and 4D containers. It is similar to MapOverlap in that a block-shaped region of elements is available in the user function, however each block is reduced to a single value so that the result container will have smaller extents (but still same dimensionality). The pool (block-shaped region being reduced) is accessible in the user function via a Pool<T> proxy object.</p>
 					
@@ -220,14 +223,14 @@ mvmult<span style='color:#808030; '>(</span>y<span style='color:#808030; '>,</sp
 						<a href="#p2019">2019</a> -
 						<a href="#p2020">2020</a> -
 						<a href="#p2021">2021</a> -
-						<a href="#p2021">2022</a> -
-						<a href="#p2021">2023</a> -
-						<a href="#p2021">2024</a> -
-						<a href="#p2022">2025</a>
+						<a href="#p2022">2022</a> -
+						<a href="#p2023">2023</a> -
+						<a href="#p2024">2024</a> -
+						<a href="#p2025">2025</a>
 					</p>
 					
 					<span class="buttons">
-							<span class="button get" id="userguide"><img class="thumb" alt="user guide" src="img/userguide_skepu_titlepage.png"/><br/><a href="docs/userguide_skepu.pdf">User Guide<br>(2021)</a></span>
+							<span class="button get" id="userguide"><img class="thumb" alt="user guide" src="img/userguide_skepu_titlepage.png"/><br/><a href="docs/userguide_skepu.pdf">User Guide<br>(2026)</a></span>
 							<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/lic-seminar-cover.png"/><br/><a href="docs/lic-seminar.pdf">Licentiate<br/>Seminar</a></span>
 							<span class="button get" id="slides"><img class="thumb" alt="presentation" src="img/tutorial-titlepage.png"/><br/><a href="docs/MCC2019-SkePU-Tutorial.pdf">Tutorial<br>(2019)</a></span>
 					</span>
