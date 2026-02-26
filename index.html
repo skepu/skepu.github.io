@@ -28,7 +28,7 @@
 				<p id="tagline">Portable Autotunable Skeleton Programming Framework<br>for Multicore CPU and Multi-GPU Systems and Clusters</p>
 				
 				<p id="news">
-					<em>New:</em> Release of <a href="#downloads">SkePU 3.1</a>, with the SkePU "standard library".
+					<em>New (Feb. 2026):</em> Release of <a href="#downloads">SkePU 3.3</a>, with SkePU-DNN and the new SkeVU trace visualizer.
 				</p>
 				
 				<section>
@@ -42,13 +42,14 @@ It is a C++ template library with (in its current version) eight data-parallel s
 					<h4>Supported skeletons</h4>
 					<ul>
 						<li><a href="#map">Map</a>: Data-parallel element-wise application of a function with arbitrary arity.</li>
-						<li><a href="#reduce">Reduce</a>: Reduction with 1D and 2D variations.</li>
+						<li><a href="#reduce">Reduce</a>: Reduction with 1D, 2D, 3D, 4D variations.</li>
 						<li><a href="#mapreduce">MapReduce</a>: Efficient chaining of Map and Reduce.</li>
 						<li><a href="#mapoverlap">MapOverlap</a>: Stencil operation in 1D, 2D, 3D, and 4D.</li>
+            <li><a href="#mappool">MapPool</a>: Partial block-wise reduction (pooling operator) in 1D, 2D, 3D, and 4D.</li>
 						<li><a href="#scan">Scan</a>: Generalized prefix sum.</li>
 						<li><a href="#mappairs">MapPairs</a>: Cartesian product-style computation.</li>
 						<li><a href="#mappairsreduce">MapPairsReduce</a>: Efficient chaining of MapPairs and Reduce.</li>
-						<li><a href="#call">Call</a>: Generic multi-variant component.</li>
+						<li>(deprecated: <a href="#call">Call</a>: Generic multi-variant component - replaced by skepu::external)</li>
 					</ul>
 					
 					<h4>Multiple back-ends and multi-GPU support</h4>
@@ -67,10 +68,9 @@ It is a C++ template library with (in its current version) eight data-parallel s
 					
 					<h4>Freely accessible containers inside user functions</h4>
 
-<p>SkePU smart data-containers are typically made available element-wise in user functions. For more complex data access patterns, there can be a need to access multiple elements from a single smart container. SkePU solves this use-case by the <em>proxy containers</em>: Vec, Mat, Ten3, and Ten4. Examples of such use-cases are stencil weights in an image filter, or iterating through a matrix row in a matrix-vector multiplication.</p>
+<p>SkePU smart data-containers are typically made available element-wise in user functions. For more complex data access patterns, there can be a need to access multiple elements from a single smart container. SkePU solves this use-case by the <em>proxy containers</em>: Vec, Mat, Ten3, Ten4. </p>
 
-<p>In addition to whole-container proxy objects, there are three instances of proxies for partial container access: MatRow<T> and  MatCol<T> for matrices, and RegionND<T> representing the neighborhood around a specific element for each of the four types of smart data-containers.</p>
-
+<p>In addition to whole-container proxy objects, there are further types of generic proxies for <i>partial</i> container access: MatRow<T> and  MatCol<T> for matrices (e.g. for iterating through a matrix row in a matrix-vector multiplication), Region1D<T>...Region4D<T> representing the neighborhood around a specific element for each of the four types of smart data-containers (e.g. for stencil weights in an image filter), and Pool1D<T>...Pool4D<T> (block regions for pooling operators).</p>
 
 
 <pre class="example">template<span style='color:#808030; '>&lt;</span>typename T<span style='color:#808030; '>></span>
@@ -150,11 +150,15 @@ mvmult<span style='color:#808030; '>(</span>y<span style='color:#808030; '>,</sp
 					
 					<h3 id="mapoverlap">MapOverlap</h3>
 					
-					<p>MapOverlap represents a stencil operation. It is similar to Map, but instead of a single element, a region of elements is available in the user function. The region is passed as a pointer to the center element, so manual pointer arithmetic is required to access the data.</p>
+					<p>MapOverlap represents a stencil operation. It is similar to Map, but instead of a single element, a region of elements is available in the user function. The stencil region is accessible in the user function via a generic RegionXD<T> object.</p>
 					
 					<p>A MapOverlap can either be one-dimensional, working on vectors or matrices (separable computations only) or two-dimensional for matrices. The type is set per-instance and deduced from the user function. Different edge handling modes are available, such as overlapping or clamping.</p>
 					
 					{% include_relative codesamples/mapoverlap.html %}
+
+          <h3 id="mapoverlap">MapPool</h3>
+					
+					<p>MapPool represents a generic block-wise reduction operation applied on 1D, 2D, 3D and 4D containers. It is similar to MapOverlap in that a block-shaped region of elements is available in the user function, however each block is reduced to a single value so that the result container will have smaller extents (but still same dimensionality). The pool (block-shaped region being reduced) is accessible in the user function via a Pool<T> proxy object.</p>
 					
 					<h3 id="mappairs">MapPairs</h3>
 					
@@ -216,7 +220,10 @@ mvmult<span style='color:#808030; '>(</span>y<span style='color:#808030; '>,</sp
 						<a href="#p2019">2019</a> -
 						<a href="#p2020">2020</a> -
 						<a href="#p2021">2021</a> -
-						<a href="#p2022">2022</a>
+						<a href="#p2021">2022</a> -
+						<a href="#p2021">2023</a> -
+						<a href="#p2021">2024</a> -
+						<a href="#p2022">2025</a>
 					</p>
 					
 					<span class="buttons">
@@ -389,14 +396,34 @@ author version: <a href="http://www.ida.liu.se/labs/pelab/skepu/skepu1/publicati
 						</li>
 					</ul>
 					
-					<h3 id="p2023">To Appear</h3>
+					<h3 id="p2023">2023</h3>
 					<ul>
 						<li>August Ernstsson, Dalvan Griebler, Christoph Kessler.
-							<a href="https://hlpp2022.dcc.fc.up.pt/index.html#accepted">Assessing Application Efficiency and Performance Portability in Single-Source Programming for Heterogeneous Parallel Systems</a>.
-							<i>Presented at HLPP 2022</i>, to appear.
+							<a href="https://doi.org/10.1007/s10766-022-00746-1">Assessing Application Efficiency and Performance Portability in Single-Source Programming for Heterogeneous Parallel Systems</a>.
+							<i>International Journal of Parallel Programming</i> 51(1), Jan. 2023 (online: Dec. 2022).
+              Springer, Open Access. DOI: 10.1007/s10766-022-00746-1.
 						</li>
 					</ul>
 
+          <h3 id="p2024">2024</h3>
+					<ul>
+						<li>Björn Birath, August Ernstsson, John Tinnerholm, Christoph Kessler:
+              <a href="https://doi.org/10.1007/s10766-024-00770-3">High-Level Programming of FPGA-Accelerated Systems with Parallel Patterns</a>.
+              <i>International Journal of Parallel Programming</i>, May 2024. Springer, Open Access. DOI: 10.1007/s10766-024-00770-3
+						</li>
+					</ul>
+
+          <h3 id="p2025">2025</h3>
+					<ul>
+            <li>Sehrish Qummar, August Ernstsson, Christoph Kessler, and Oleg Sysoev:
+              <a href="https://doi.org/10.1109/IPDPSW66978.2025.00068">SkePU-DNN: Algorithmic Skeleton Programming for Deep Learning on Heterogeneous Systems</a>.
+              Proc. 2025 IEEE International Parallel and Distributed Processing Symposium Workshops (IPDPSW), Milano, Italy, June 2025, pp. 423-432. DOI: 10.1109/IPDPSW66978.2025.00068. 
+            </li>
+						<li>August Ernstsson, Elin Frankell, Christoph Kessler:
+              <a href="https://doi.org/10.1007/s10766-025-00805-3">Interactive Performance Visualization and Analysis of Execution Traces for Pattern-based Parallel Programming</a>. 
+              <i>International Journal of Parallel Programming</i> 53(5):29, Nov. 2025. Springer, Open Access. DOI: 10.1007/s10766-025-00805-3
+						</li>
+					</ul>
 					
 					<h2 id="work">Ongoing work</h2>
 					<p>SkePU is a work in progress.  Future work includes adding support for more skeletons and containers, e.g. for sparse matrix operations; for further task-parallel skeletons; and for other types of target architectures.</p>
@@ -404,12 +431,12 @@ author version: <a href="http://www.ida.liu.se/labs/pelab/skepu/skepu1/publicati
 
 					<h3>Related projects</h3>
 					<ul>
-						<li><a href="https://www.ida.liu.se/labs/pelab/meterpu/">MeterPU</a>: Generic portable measurement framework for multicore CPU and multi-GPU systems</li>
+						<li><a href="https://www.ida.liu.se/labs/pelab/meterpu/">MeterPU</a>: Generic portable measurement framework for C++ for multicore CPU and multi-GPU systems</li>
 					</ul>
 					
 					<h2 id="contact">Contact</h2>
 					<ul>
-						<li><a href="https://liu.se/en/employee/auger33">August Ernstsson</a></li>
+						<li><a href="https://liu.se/en/employee/auger33">Dr. August Ernstsson</a></li>
 						<li><a href="http://www.ida.liu.se/~chrke/">Prof. Christoph Kessler</a></li>
 					</ul>
 					<p>For reporting feature suggestions, bug reports, and other comments: please email to "&lt;firstname&gt; DOT &lt;lastname&gt; AT liu DOT se".</p>
@@ -424,6 +451,8 @@ by the EU FP7 projects <a href="http://www.peppher.eu/">PEPPHER</a>
 and <a href="http://www.excess-project.eu/">EXCESS</a>, 
 by <a href="http://www.e-science.se">SeRC</a> project OpCoReS, 
 by <a href="http://www.ida.liu.se/ext/cugs/">CUGS</a>,
+by <a href="https://elliit.se/">ELLIIT</a>,
+by <a href="https://strategiska.se/en/">SSF</a>,
 and by Link&ouml;ping University, Sweden.</p>
 <p>Previous major contributors to SkePU include <em>Johan Enmyren</em> and <em>Usman Dastgeer</em>. The multivector container for MapArray (note: obsolete in SkePU 2), and the SkePU 1.2 user guide have been added by <em>Oskar Sj&ouml;str&ouml;m</em>.</p>
 <p>Streaming support for CUDA in SkePU 1.2 has been contributed by <em>Claudio Parisi</em> from University of Pisa, Italy, in a cooperation with the FastFlow project.</p>
@@ -434,7 +463,7 @@ and by Link&ouml;ping University, Sweden.</p>
 <p>Special thanks to the project partners of EXA2PRO who helped shape the design and feature set of SkePU 3.</p>
 
 <p>We also thank the <b>National Supercomputing
-Centre</b> (NSC) and SNIC for access to their HPC computing resources (SNIC 2016/5-6, SNIC 2020/13-113, LiU-gpu-2021-1).</p>
+Centre</b> (NSC) and SNIC/NAISS for access to their HPC computing resources (SNIC 2016/5-6, SNIC 2020/13-113, LiU-gpu-2021-1, NAISS 2025/22-60, NAISS 2026/4-64, LiU-gpu-2023-05).</p>
 </section>
 				
 				<p id="logos">
