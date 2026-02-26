@@ -71,9 +71,9 @@ It is a C++ template library with (in its current version) eight data-parallel s
 					
 					<h4>Access control for container elements inside user functions</h4>
 
-<p>SkePU smart data-containers are typically made available element-wise in user functions. For more complex data access patterns, there can be a need to access multiple elements from a single smart container. SkePU solves this use-case by the <em>proxy containers</em>: Vec, Mat, Ten3, Ten4. </p>
+<p>SkePU smart data-containers are typically made available element-wise in user functions. For more complex data access patterns, there can be a need to access multiple elements from a single smart container. SkePU solves this use-case by the <em>proxy containers</em>: <kbd>Vec&lt;T&rt;</kbd>, <kbd>Mat&lt;T&rt;</kbd>, <kbd>Ten3&lt;T&rt;</kbd>, <kbd>Ten4&lt;T&rt;</kbd>. These are likewise generic in the element type <kbd>T</kbd>.</p>
 
-<p>In addition to whole-container proxy objects, there are further types of generic proxies for <i>partial</i> container access: <kbd>MatRow<T></kbd> and  <code>MatCol<T></code> for matrices (e.g. for iterating through a matrix row in a matrix-vector multiplication), Region1D<T>...Region4D<T> representing the neighborhood around a specific element for each of the four types of smart data-containers (e.g. for stencil weights in an image filter), and Pool1D<T>...Pool4D<T> (block regions for pooling operators).</p>
+<p>In addition to whole-container proxy objects, there are further types of generic proxies for <i>partial</i> container access: <kbd>MatRow&lt;T&rt;</kbd> and  <kbd>MatCol&lt;T&rt;</kbd> for matrices (e.g. for iterating through a matrix row in a matrix-vector multiplication), <kbd>Region1D&lt;T&rt;</kbd>...<kbd>Region4D&lt;T&rt;</kbd> representing the neighborhood around a specific element for each of the four types of smart data-containers (e.g. for stencil weights in an image filter), and <kbd>Pool1D&lt;T&rt;</kbd>...<kbd>Pool4D&lt;T&rt;</kbd> (block regions for pooling operators).</p>
 
 
 <pre class="example">template<span style='color:#808030; '>&lt;</span>typename T<span style='color:#808030; '>></span>
