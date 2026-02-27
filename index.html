@@ -186,7 +186,7 @@ mvmult<span style='color:#808030; '>(</span>y<span style='color:#808030; '>,</sp
 						They interface with SkePU data-containers and may internally use SkePU skeletons to portably parallelize their computations. 
 						Each SkePU standard library module (skepu-headers/src/skepu-lib/*) comes with its own namespace:</p>
 				<ul>
-					<li>Deterministic Portable Pseudorandom Number Generation (skepu::prng)</li>
+					<li>Deterministic Portable Pseudorandom Number Generation (using the skepu::Random&lt;&gt; proxy type for accessing pseudorandom number streams in user functions)</li>
 					<li>Complex Numbers (skepu::complex)</li> 
 				<li>Linear Algebra (skepu::blas)</li> 
 				<li>Image Filtering and Parsing/Serialization (skepu::filter)</li>
