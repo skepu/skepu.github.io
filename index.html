@@ -16,6 +16,7 @@
 				<a class="menu-item" href="#downloads">Downloads</a> &middot;
 				<a class="menu-item" href="#example">Example</a> &middot;
 				<a class="menu-item" href="#skeletons">Skeletons</a> &middot;
+				<a class="menu-item" href="#standardlibrary">Standard library</a> &middot;
 				<a class="menu-item" href="#applications">Applications</a> &middot;
 				<a class="menu-item" href="#publications">Publications</a> &middot;
 				<a class="menu-item" href="#contact">Contact</a> &middot;
@@ -177,6 +178,23 @@ mvmult<span style='color:#808030; '>(</span>y<span style='color:#808030; '>,</sp
 					{% include_relative codesamples/mappairsreduce.html %}
 					
 				</section>
+
+				<section>
+					<h2 id="standardlibrary">SkePU Standard Library</h2>
+					<p>SkePU provides a set of utility modules for commonly used functionality. 
+						These span from utilities like SkePU-aware I/O routines and time measurement via portable deterministic parallel pseudorandom number generation to basic linear algebra and deep learning functionality. 
+						They interface with SkePU data-containers and may internally use SkePU skeletons to portably parallelize their computations. 
+						Each SkePU standard library module (skepu-headers/src/skepu-lib/*) comes with its own namespace:</p>
+				<ul>
+					<li>Deterministic Portable Pseudorandom Number Generation (skepu::prng)</li>
+					<li>Complex Numbers (skepu::complex)</li> 
+				<li>Linear Algebra (skepu::blas)</li> 
+				<li>Image Filtering and Parsing/Serialization (skepu::filter)</li>
+				<li>Time Measurement Utilities (skepu::benchmark)</li>
+				<li>Consistent Data-Container Input/Output (skepu::io)</li>
+				<li>Convolutional and Deep Neural Network Learning and Inference (skepu::dnn)</li> 
+					<li>Commonly used simple user functions such as add, max, ... (skepu::util)</li>
+			</section>
 				
 				<section>
 					<h2 id="applications">Applications</h2>
